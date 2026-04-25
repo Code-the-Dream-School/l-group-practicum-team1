@@ -8,4 +8,9 @@ const user = (req, res) => {
         created_at: new Date()
     })
 }
-module.exports = {user};
+
+
+const userLogin = (req, res) => {
+    res.json({ message: 'This will be the login '})
+}
+module.exports = {user, userLogin};
