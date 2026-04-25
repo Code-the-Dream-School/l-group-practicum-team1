@@ -25,7 +25,7 @@ app.use(limiter);
 // Routes
 app.use('/api/hello', helloRoutes);
 
-
+//register, login, logout
 const userRoutes = require('./routes/user.Routes')
 app.use('/api/', userRoutes);
 

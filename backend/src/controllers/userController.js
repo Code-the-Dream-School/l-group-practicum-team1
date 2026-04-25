@@ -1,5 +1,9 @@
 
-const user = (req, res) => {
+
+
+
+//Register
+const register = (req, res) => {
     res.json({
         first_name: 'Seth', 
         last_name: 'Johnson',
@@ -10,7 +14,20 @@ const user = (req, res) => {
 }
 
 
-const userLogin = (req, res) => {
+
+//Login
+const login = (req, res) => {
     res.json({ message: 'This will be the login '})
 }
-module.exports = {user, userLogin};
+
+
+
+
+//Logout
+const logout = (req, res) => {
+    res.end('Big Dog has logged out')
+}
+
+
+
+module.exports = {register, login, logout};
