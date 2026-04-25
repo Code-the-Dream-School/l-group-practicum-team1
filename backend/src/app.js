@@ -6,6 +6,8 @@ const rateLimit = require('express-rate-limit');
 
 const helloRoutes = require('./routes/hello.routes');
 
+
+
 const app = express();
 
 // Security & best‑practice middleware
@@ -22,6 +24,10 @@ app.use(limiter);
 
 // Routes
 app.use('/api/hello', helloRoutes);
+
+
+const userRoutes = require('./routes/user.Routes')
+app.use('/api/', userRoutes);
 
 // Root route
 app.get('/', (req, res) => {
