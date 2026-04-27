@@ -15,7 +15,7 @@ const register = (req, res) => {
 
 
 
-//Login
+//Login ---> awaiting Prisma and data base string 
 const login = (req, res) => {
     res.json({ message: 'This will be the login '})
 }
@@ -25,7 +25,7 @@ const login = (req, res) => {
 
 //Logout
 const logout = (req, res) => {
-    res.end('Big Dog has logged out')
+    res.end('user has logged out')
 }
 
 
