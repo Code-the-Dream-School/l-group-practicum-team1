@@ -205,9 +205,19 @@ Consistency makes frontend development easier.
    npm install
    ```
 
-3. Add connection string:
+3. Add connection strings:
 
-   Add your `POSTGRES_URI=<your_dev_connection_string>` (Neon dev branch connection string) to `.env` file
+   Add the development connection string to `.env`:
+
+   ```env
+      POSTGRES_URI=<your_DEVELOPMENT_connection_string>
+   ```
+
+   Add the production connection string to `.env.production`:
+
+   ```env
+      POSTGRES_URI=<your_PRODUCTION_connection_string>
+   ```
 
 4. Generate Prisma Client:
 
@@ -223,8 +233,11 @@ Consistency makes frontend development easier.
 
 ### When you need to change the database
 
-1. Update the Prisma schema (manually)  
+1. Update the Prisma schema
+
+   ```text
    prisma/schema.prisma
+   ```
 
 2. Create a migration:
 
@@ -238,7 +251,7 @@ Consistency makes frontend development easier.
    npx prisma generate
    ```
 
-4. Commit and push your changes so others can use your changes.
+4. Commit and push your changes so others can use them.
 
 ### When you need to sync with teammates
 
@@ -248,7 +261,7 @@ Consistency makes frontend development easier.
    git pull
    ```
 
-2. Apply migrations locally:
+2. Apply migrations:
 
    ```bash
    npx prisma migrate dev
@@ -259,11 +272,52 @@ Consistency makes frontend development easier.
    npx prisma generate
    ```
 
+### Production updates (only when needed)
+
+Production database should only be updated using:
+
+```bash
+  POSTGRES_URI="your_PRODUCTION_connection_string" npx prisma migrate deploy
+```
+
 ### ⚠️ Important Notes
 
 - Always run `prisma generate` after pulling schema changes
 - Do not edit migration files manually
 - Avoid creating migrations at the same time as teammates (coordinate changes)
+- Never run migrations on the production database (DO NOT run on production: `npx prisma migrate dev`)
+- Use `npx prisma migrate deploy` for production
+
+## Seeding the Database with Test Data
+
+⚠️ Use this only on the **development database**.
+Make sure your `.env` file points to the **development database**.
+
+The seed file is located here: `prisma/seed.js`.
+The seed command is in: `prisma.config.js`.
+
+### Run seed
+
+Run from the `backend` folder:
+
+```bash
+npx prisma db seed
+```
+
+### Clean database
+
+⚠️ Use this only on the **development database**.
+
+If you want to reset the development database:
+
+```bash
+npx prisma migrate reset
+```
+
+This command will:
+
+- drop the current database tables
+- recreate tables from migrations
 
 ## 🧠 Recommended Mindset
 
