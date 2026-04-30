@@ -3,7 +3,7 @@
 
 
 //Register
-const register = (req, res) => {
+async const register = (req, res) => {
     res.json({
         first_name: 'Seth', 
         last_name: 'Johnson',
