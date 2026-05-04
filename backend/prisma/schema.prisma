@@ -59,8 +59,8 @@ model User {
   lastName       String   @map("last_name")
   email          String   @unique
   phone          String?
-  hashedPassword String   @map("hashed_password")
-  role           UserRole
+  password       String   @map("password")
+  role           UserRole @default(PLAYER)
 
   rating         Int?
   isActive       Boolean  @default(true) @map("is_active")
