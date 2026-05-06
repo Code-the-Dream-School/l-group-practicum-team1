@@ -17,15 +17,19 @@ const register = async (req, res) => {
       .json({ message: error.details[0].message });
   }
 
+  // destructuring the values from the userSchema test of the req.body
   const { firstName, lastName, password, email } = value;
 
+  //Hashing the password and deleting the natural password for security
   const hashedPassword = await bcrypt.hash(password, 10);
+  delete value.password;
+
   const user = await prisma.user.create({
     data: {
       firstName: firstName,
       lastName: lastName,
       email: email,
-      password: hashedPassword
+      hashedPassword: hashedPassword,
     },
   });
 
@@ -41,7 +45,33 @@ const register = async (req, res) => {
 
 //Login ---> awaiting Prisma and data base string
 const login = async (req, res) => {
-  res.json({ message: "This will be the login " });
+  //checking if req.body has email and password
+  if(!req.body || !req.body.email || !req.body.password){
+    res.status(StatusCodes.BAD_REQUEST)
+  }
+  //destructuring the values from the req.body
+  let { email, password } = req.body
+
+  //email to lowerCase for comparison
+  email = email.toLowerCase();
+
+  //checking the database for the email
+  const user = await prisma.user.findUnique({
+    where: {email}
+  })
+
+  //if not user return a error message
+  if(!user){
+    return res.status(StatusCodes.UNAUTHORIZED).json({message: "Not Authorized"})
+  }
+
+  const isPassword = await bcrypt.compare(password, user.hashedPassword)
+  if(!isPassword){
+    return res.status(StatusCodes.UNAUTHORIZED).json({ message: "Invalid email or password"})
+  }
+
+
+  res.json({ message: "You are logged in" });
 };
 
 //Logout
@@ -50,3 +80,5 @@ const logout = async (req, res) => {
 };
 
 module.exports = { register, login, logout };
+
+
