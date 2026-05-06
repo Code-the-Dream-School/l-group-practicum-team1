@@ -17,61 +17,78 @@ const register = async (req, res) => {
       .json({ message: error.details[0].message });
   }
 
-  // destructuring the values from the userSchema test of the req.body
-  const { firstName, lastName, password, email } = value;
+  try {
+    // destructuring the values from the userSchema test of the req.body
+    const { firstName, lastName, password, email } = value;
 
-  //Hashing the password and deleting the natural password for security
-  const hashedPassword = await bcrypt.hash(password, 10);
-  delete value.password;
-
-  const user = await prisma.user.create({
-    data: {
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      hashedPassword: hashedPassword,
-    },
-  });
-
-  if (!user) {
-    res.status(StatusCodes.BAD_REQUEST).json({
-      message: "missing some valid information",
+    //checking to see if the user has an account with this email already
+    const userExists = await prisma.user.findUnique({
+      where: { email: email }
+    })
+    if (userExists) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: 'A user has used the email already'})
+    }
+    //Hashing the password and deleting the natural password for security
+    const hashedPassword = await bcrypt.hash(password, 10);
+    delete value.password;
+    const user = await prisma.user.create({
+      data: {
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        hashedPassword: hashedPassword,
+      },
     });
+
+    if (!user) {
+      res.status(StatusCodes.BAD_REQUEST).json({
+        message: "Invalid email or password",
+      });
+    }
+    res.status(201).json({
+      message: "User created",
+    });
+  } catch (err) {
+    return res.status(500).json({ message: "Server error"})
   }
-  res.status(201).json({
-    message: "User created",
-  });
 };
 
 //Login ---> awaiting Prisma and data base string
 const login = async (req, res) => {
   //checking if req.body has email and password
-  if(!req.body || !req.body.email || !req.body.password){
-    res.status(StatusCodes.BAD_REQUEST)
+  if (!req.body.email || !req.body.password) {
+    res.status(StatusCodes.BAD_REQUEST).json({ message: "Missing email or email"});
   }
-  //destructuring the values from the req.body
-  let { email, password } = req.body
+  try {
+    //destructuring the values from the req.body
+    let { email, password } = req.body;
 
-  //email to lowerCase for comparison
-  email = email.toLowerCase();
+    //email to lowerCase for comparison
+    email = email.toLowerCase();
 
-  //checking the database for the email
-  const user = await prisma.user.findUnique({
-    where: {email}
-  })
+    //checking the database for the email
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
 
-  //if not user return a error message
-  if(!user){
-    return res.status(StatusCodes.UNAUTHORIZED).json({message: "Not Authorized"})
+    //if not user return a error message
+    if (!user) {
+      return res
+        .status(StatusCodes.UNAUTHORIZED)
+        .json({ message: "Not Authorized" });
+    }
+
+    const isPassword = await bcrypt.compare(password, user.hashedPassword);
+    if (!isPassword) {
+      return res
+        .status(StatusCodes.UNAUTHORIZED)
+        .json({ message: "Invalid email or password" });
+    }
+
+    res.json({ message: "You are logged in" });
+  } catch (err) {
+    return res.status(500).json({ message: "Server error"})
   }
-
-  const isPassword = await bcrypt.compare(password, user.hashedPassword)
-  if(!isPassword){
-    return res.status(StatusCodes.UNAUTHORIZED).json({ message: "Invalid email or password"})
-  }
-
-
-  res.json({ message: "You are logged in" });
 };
 
 //Logout
@@ -80,5 +97,3 @@ const logout = async (req, res) => {
 };
 
 module.exports = { register, login, logout };
-
-
