@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client-js"
   
@@ -11,6 +6,122 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+model User {
+  id             String   @id @default(uuid()) @db.Uuid
+  firstName      String   @map("first_name")
+  lastName       String   @map("last_name")
+  email          String   @unique
+  phone          String?
+  hashedPassword String   @map("hashed_password")
+  role           UserRole @default(PLAYER)
+
+  rating         Int?
+  isActive       Boolean  @default(true) @map("is_active")
+
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  tournamentPlayers TournamentPlayer[]
+  tournamentAdmins  TournamentAdmin[]
+  tournamentPlayers TournamentPlayer[]
+
+  @@map("user")
+}
+
+model Tournament {
+  id                String             @id @default(uuid()) @db.Uuid
+  name              String
+  format            TournamentFormat
+  location          String?
+  timeControl       String             @map("time_control")
+  totalRounds       Int?               @map("total_rounds")
+  category          String?
+  tournamentType    TournamentType     @default(SINGLE) @map("tournament_type")
+  startDate         DateTime           @map("start_date") @db.Date
+  endDate           DateTime?          @map("end_date") @db.Date
+  published         Boolean            @default(false)
+  createdAt         DateTime           @default(now()) @map("created_at")
+  updatedAt         DateTime           @updatedAt @map("updated_at")
+  rounds            Round[]
+  tournamentAdmins  TournamentAdmin[]
+  tournamentPlayers TournamentPlayer[]
+
+  @@map("tournament")
+}
+
+model Round {
+  id           String     @id @default(uuid()) @db.Uuid
+  tournamentId String     @map("tournament_id") @db.Uuid
+  roundNumber  Int        @map("round_number")
+  title        String?
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+  matches      Match[]
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+
+  @@unique([tournamentId, roundNumber])
+  @@map("round")
+}
+
+model Match {
+  id                String             @id @default(uuid()) @db.Uuid
+  roundId           String             @map("round_id") @db.Uuid
+  player1Id         String?            @map("player1_id") @db.Uuid
+  player2Id         String?            @map("player2_id") @db.Uuid
+  winnerPlayerId    String?            @map("winner_player_id") @db.Uuid
+  nextMatchId       String?            @map("next_match_id") @db.Uuid
+  nextMatchPosition NextMatchPosition? @map("next_match_position")
+  scheduledAt       DateTime?          @map("scheduled_at")
+  startedAt         DateTime?          @map("started_at")
+  finishedAt        DateTime?          @map("finished_at")
+  player1Score      Decimal?           @map("player1_score") @db.Decimal(2, 1)
+  player2Score      Decimal?           @map("player2_score") @db.Decimal(2, 1)
+  player1Color      ChessColor?        @map("player1_color")
+  player2Color      ChessColor?        @map("player2_color")
+  status            MatchStatus        @default(PENDING)
+  createdAt         DateTime           @default(now()) @map("created_at")
+  updatedAt         DateTime           @updatedAt @map("updated_at")
+  nextMatch         Match?             @relation("MatchProgression", fields: [nextMatchId], references: [id])
+  previousMatches   Match[]            @relation("MatchProgression")
+  player1           TournamentPlayer?  @relation("MatchPlayer1", fields: [player1Id], references: [id])
+  player2           TournamentPlayer?  @relation("MatchPlayer2", fields: [player2Id], references: [id])
+  round             Round              @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  winner            TournamentPlayer?  @relation("MatchWinner", fields: [winnerPlayerId], references: [id])
+
+  @@map("match")
+}
+
+model TournamentPlayer {
+  id               String                 @id @default(uuid()) @db.Uuid
+  tournamentId     String                 @map("tournament_id") @db.Uuid
+  userId           String                 @map("user_id") @db.Uuid
+  status           TournamentPlayerStatus @default(REGISTERED)
+  seedNumber       Int?                   @map("seed_number")
+  createdAt        DateTime               @default(now()) @map("created_at")
+  updatedAt        DateTime               @updatedAt @map("updated_at")
+  matchesAsPlayer1 Match[]                @relation("MatchPlayer1")
+  matchesAsPlayer2 Match[]                @relation("MatchPlayer2")
+  matchesWon       Match[]                @relation("MatchWinner")
+  tournament       Tournament             @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  user             User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([tournamentId, userId])
+  @@map("tournament_player")
+}
+
+model TournamentAdmin {
+  id           String     @id @default(uuid()) @db.Uuid
+  tournamentId String     @map("tournament_id") @db.Uuid
+  userId       String     @map("user_id") @db.Uuid
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([tournamentId, userId])
+  @@map("tournament_admin")
 }
 
 enum TournamentFormat {
@@ -51,147 +162,4 @@ enum NextMatchPosition {
 enum ChessColor {
   WHITE
   BLACK
-}
-
-model User {
-  id             String   @id @default(uuid()) @db.Uuid
-  firstName      String   @map("first_name")
-  lastName       String   @map("last_name")
-  email          String   @unique
-  phone          String?
-  hashedPassword String   @map("hashed_password")
-  role           UserRole @default(PLAYER)
-
-  rating         Int?
-  isActive       Boolean  @default(true) @map("is_active")
-
-  createdAt      DateTime @default(now()) @map("created_at")
-  updatedAt      DateTime @updatedAt @map("updated_at")
-
-  tournamentPlayers TournamentPlayer[]
-  tournamentAdmins  TournamentAdmin[]
-
-  @@map("user")
-}
-
-model Tournament {
-  id             String           @id @default(uuid()) @db.Uuid
-
-  name           String
-  format         TournamentFormat
-  location       String?
-  timeControl    String           @map("time_control")
-
-  totalRounds    Int?             @map("total_rounds")
-  category       String?
-  tournamentType TournamentType   @default(SINGLE) @map("tournament_type")
-
-  startDate      DateTime         @db.Date @map("start_date")
-  endDate        DateTime?        @db.Date @map("end_date")
-
-  published      Boolean          @default(false)
-
-  createdAt      DateTime         @default(now()) @map("created_at")
-  updatedAt      DateTime         @updatedAt @map("updated_at")
-
-  rounds              Round[]
-  tournamentPlayers   TournamentPlayer[]
-  tournamentAdmins    TournamentAdmin[]
-
-  @@map("tournament")
-}
-
-model Round {
-  id           String   @id @default(uuid()) @db.Uuid
-
-  tournamentId String   @db.Uuid @map("tournament_id")
-  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
-
-  roundNumber  Int      @map("round_number")
-  title        String?
-
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
-
-  matches      Match[]
-
-  @@unique([tournamentId, roundNumber])
-  @@map("round")
-}
-
-model Match {
-  id        String   @id @default(uuid()) @db.Uuid
-
-  roundId   String   @db.Uuid @map("round_id")
-  round     Round    @relation(fields: [roundId], references: [id], onDelete: Cascade)
-
-  player1Id String?  @db.Uuid @map("player1_id")
-  player2Id String?  @db.Uuid @map("player2_id")
-  winnerPlayerId String? @db.Uuid @map("winner_player_id")
-
-  player1 TournamentPlayer? @relation("MatchPlayer1", fields: [player1Id], references: [id])
-  player2 TournamentPlayer? @relation("MatchPlayer2", fields: [player2Id], references: [id])
-  winner  TournamentPlayer? @relation("MatchWinner", fields: [winnerPlayerId], references: [id])
-
-  nextMatchId String? @db.Uuid @map("next_match_id")
-  nextMatch   Match?  @relation("MatchProgression", fields: [nextMatchId], references: [id])
-  previousMatches Match[] @relation("MatchProgression")
-
-  nextMatchPosition NextMatchPosition? @map("next_match_position")
-
-  scheduledAt DateTime? @map("scheduled_at")
-  startedAt   DateTime? @map("started_at")
-  finishedAt  DateTime? @map("finished_at")
-
-  player1Score Decimal? @db.Decimal(2, 1) @map("player1_score")
-  player2Score Decimal? @db.Decimal(2, 1) @map("player2_score")
-
-  player1Color ChessColor? @map("player1_color")
-  player2Color ChessColor? @map("player2_color")
-
-  status MatchStatus @default(PENDING)
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  @@map("match")
-}
-
-model TournamentPlayer {
-  id           String   @id @default(uuid()) @db.Uuid
-
-  tournamentId String   @db.Uuid @map("tournament_id")
-  userId       String   @db.Uuid @map("user_id")
-
-  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
-  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  status       TournamentPlayerStatus @default(REGISTERED)
-  seedNumber   Int? @map("seed_number")
-
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
-
-  matchesAsPlayer1 Match[] @relation("MatchPlayer1")
-  matchesAsPlayer2 Match[] @relation("MatchPlayer2")
-  matchesWon       Match[] @relation("MatchWinner")
-
-  @@unique([tournamentId, userId])
-  @@map("tournament_player")
-}
-
-model TournamentAdmin {
-  id           String @id @default(uuid()) @db.Uuid
-
-  tournamentId String @db.Uuid @map("tournament_id")
-  userId       String @db.Uuid @map("user_id")
-
-  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
-  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
-
-  @@unique([tournamentId, userId])
-  @@map("tournament_admin")
 }

@@ -5,4 +5,7 @@ module.exports = defineConfig({
   datasource: {
     url: process.env.POSTGRES_URI,
   },
+  migrations: {
+    seed: "node ./prisma/seed.js",
+  },
 });
