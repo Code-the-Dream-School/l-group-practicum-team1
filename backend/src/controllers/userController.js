@@ -4,6 +4,7 @@ const { StatusCodes } = require("http-status-codes");
 const userSchema = require("../../validations/userValidation.js");
 // const { PrismaClient } = require('@prisma/client')
 const prisma = require("../prisma.js");
+const generateToken = require("../utils/generateToken.js");
 
 //Register
 const register = async (req, res) => {
@@ -23,10 +24,12 @@ const register = async (req, res) => {
 
     //checking to see if the user has an account with this email already
     const userExists = await prisma.user.findUnique({
-      where: { email: email }
-    })
+      where: { email: email },
+    });
     if (userExists) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ message: 'A user has used the email already'})
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: "A user has used the email already" });
     }
     //Hashing the password and deleting the natural password for security
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -38,6 +41,7 @@ const register = async (req, res) => {
         email: email,
         hashedPassword: hashedPassword,
       },
+      token,
     });
 
     if (!user) {
@@ -47,9 +51,10 @@ const register = async (req, res) => {
     }
     res.status(201).json({
       message: "User created",
+      token,
     });
   } catch (err) {
-    return res.status(500).json({ message: "Server error"})
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -57,7 +62,9 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   //checking if req.body has email and password
   if (!req.body.email || !req.body.password) {
-    res.status(StatusCodes.BAD_REQUEST).json({ message: "Missing email or email"});
+    res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: "Missing email or email" });
   }
   try {
     //destructuring the values from the req.body
@@ -84,10 +91,11 @@ const login = async (req, res) => {
         .status(StatusCodes.UNAUTHORIZED)
         .json({ message: "Invalid email or password" });
     }
+    const token = generateToken(user.id);
 
-    res.json({ message: "You are logged in" });
+    res.json({ message: "You are logged in", token });
   } catch (err) {
-    return res.status(500).json({ message: "Server error"})
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
