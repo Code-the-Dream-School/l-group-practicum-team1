@@ -6,6 +6,8 @@ const userSchema = require("../../validations/userValidation.js");
 const prisma = require("../prisma.js");
 const generateToken = require("../utils/generateToken.js");
 
+
+
 //Register
 const register = async (req, res) => {
   if (!req.body) req.body = {};
@@ -41,17 +43,16 @@ const register = async (req, res) => {
         email: email,
         hashedPassword: hashedPassword,
       },
-      token,
     });
 
     if (!user) {
-      res.status(StatusCodes.BAD_REQUEST).json({
+      return res.status(StatusCodes.BAD_REQUEST).json({
         message: "Invalid email or password",
       });
     }
+    const token = generateToken(user.id, res)
     res.status(201).json({
-      message: "User created",
-      token,
+      message: "User created", token: token
     });
   } catch (err) {
     return res.status(500).json({ message: "Server error" });
@@ -91,9 +92,9 @@ const login = async (req, res) => {
         .status(StatusCodes.UNAUTHORIZED)
         .json({ message: "Invalid email or password" });
     }
-    const token = generateToken(user.id);
+    const token = generateToken(user.id,res);
 
-    res.json({ message: "You are logged in", token });
+    res.json({ message: "You are logged in", token:token });
   } catch (err) {
     return res.status(500).json({ message: "Server error" });
   }
