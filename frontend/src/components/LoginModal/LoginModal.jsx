@@ -35,7 +35,13 @@ function LoginModal({ isOpen, onClose }) {
         }
       );
 
-      const data = await response.json();
+      let data;
+
+      try {
+        data = await response.json();
+      } catch {
+        data = {};
+      }
 
       if (!response.ok) {
         setError(data.message || "Login failed");
