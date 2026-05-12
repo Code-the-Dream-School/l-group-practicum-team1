@@ -102,7 +102,9 @@ const login = async (req, res) => {
 
 //Logout
 const logout = async (req, res) => {
-  res.end("user has logged out");
+  res.clearCookie('jwt');
+
+  res.json({ message: 'User has logged out'})
 };
 
 module.exports = { register, login, logout };
