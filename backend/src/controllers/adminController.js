@@ -50,8 +50,8 @@ const createTournament = async (req, res) => {
   }
 };
 
-// const getTournaments = async (req, res) => {}
-
+// const getTournament = async (req, res) => {}
+// const getActiveTournaments = async (req, res) => {}
 // const deleteTournament = async (req, res) => {}
 
 // const createUser = async (req, res) => {}
