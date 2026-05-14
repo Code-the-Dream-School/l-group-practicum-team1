@@ -4,6 +4,7 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 const tournamentRouter = require("./routes/tournamentRouters");
+const adminRoutes = require("./routes/adminRoutes")
 
 const app = express();
 
@@ -18,9 +19,11 @@ const limiter = rateLimit({
   max: 100,
 });
 app.use(limiter);
+//admin routes
+app.use("/api/", adminRoutes)
 
 //register, login, logout routes
-const userRoutes = require("./routes/user.Routes");
+const userRoutes = require("./routes/userRoutes");
 app.use("/api/", userRoutes);
 
 //tournament enpoints
