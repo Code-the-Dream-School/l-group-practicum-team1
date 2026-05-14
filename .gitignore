@@ -62,3 +62,8 @@ coverage/
 # Prisma generated client
 # =========================
 backend/src/generated/prisma/
+
+# =====================
+# claude
+# =====================
+.claude/
