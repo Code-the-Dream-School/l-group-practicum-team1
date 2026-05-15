@@ -5,55 +5,12 @@ import SearchInput from "../components/ui/SearchInput";
 import TournamentRow from "../components/tournaments/TournamentRow";
 import Pagination from "../components/ui/Pagination";
 
-export default function TournamentsPage() {
+export default function Tournaments() {
   const [tournaments, setTournaments] = useState([]);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-
-  // const tournaments = [
-  //   {
-  //     id: "1",
-  //     name: "Tournament Name 1",
-  //     location: "New York, USA",
-  //     format: "offline",
-  //     category: "1",
-  //     timeControl: "10+5",
-  //     startDate: "2026-06-01",
-  //     endDate: "2026-06-02",
-  //   },
-  //   {
-  //     id: "2",
-  //     name: "Tournament Name 2",
-  //     location: "",
-  //     format: "online",
-  //     category: "2",
-  //     timeControl: "10+5",
-  //     startDate: "2026-06-02",
-  //     endDate: "2026-07-02",
-  //   },
-  //   {
-  //     id: "3",
-  //     name: "Tournament Name 3",
-  //     location: "New York, USA",
-  //     format: "offline",
-  //     category: "1",
-  //     timeControl: "10+5",
-  //     startDate: "2026-06-01",
-  //     endDate: "2026-06-02",
-  //   },
-  //   {
-  //     id: "4",
-  //     name: "Tournament Name 4",
-  //     location: "",
-  //     format: "online",
-  //     category: "2",
-  //     timeControl: "10+5",
-  //     startDate: "2026-06-02",
-  //     endDate: "2026-07-02",
-  //   },
-  // ];
 
   useEffect(() => {
     async function fetchTournaments() {
@@ -76,8 +33,8 @@ export default function TournamentsPage() {
 
         const data = await response.json();
 
-        setTournaments(data.tournaments);
-        setTotalPages(data.totalPages);
+        setTournaments(data.data);
+        setTotalPages(data.pagination.totalPages);
       } catch (error) {
         console.error(error);
       } finally {
@@ -144,8 +101,3 @@ export default function TournamentsPage() {
     </PageLayout>
   );
 }
-
-// TODO:
-// seed tournaments in the backend for testing
-// switch to Angel's branch
-// test getting tournaments with pagination and search
