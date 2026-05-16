@@ -1,5 +1,5 @@
 const prisma = require("../src/prisma");
-
+const bcrypt = require("bcryptjs")
 async function seed() {
   await prisma.$transaction(async (tx) => {
     // delete existing sample tournament
@@ -14,7 +14,7 @@ async function seed() {
         firstName: "Kenneth",
         lastName: "Thompson",
         email: "admin@test.com",
-        hashedPassword: "pa$$word123",
+        hashedPassword: await bcrypt.hash("pa$$word123", 10),
         role: "ADMIN",
         isActive: true,
       },
@@ -27,7 +27,7 @@ async function seed() {
         firstName: "Magnus",
         lastName: "Carlsen",
         email: "player1@test.com",
-        hashedPassword: "password123",
+        hashedPassword: await bcrypt.hash("pa$$word123", 10),
         role: "PLAYER",
         rating: 1000,
       },
@@ -40,7 +40,7 @@ async function seed() {
         firstName: "Hikaru",
         lastName: "Nakamura",
         email: "player2@test.com",
-        hashedPassword: "password123",
+        hashedPassword: await bcrypt.hash("pa$$word123", 10),
         role: "PLAYER",
         rating: 1100,
       },
@@ -53,7 +53,7 @@ async function seed() {
         firstName: "Garry",
         lastName: "Kasparov",
         email: "player3@test.com",
-        hashedPassword: "password123",
+        hashedPassword: await bcrypt.hash("pa$$word123", 10),
         role: "PLAYER",
         rating: 1200,
       },
@@ -66,7 +66,7 @@ async function seed() {
         firstName: "Judit",
         lastName: "Polgar",
         email: "player4@test.com",
-        hashedPassword: "password123",
+        hashedPassword: await bcrypt.hash("pa$$word123", 10),
         role: "PLAYER",
         rating: 1300,
       },
@@ -79,7 +79,7 @@ async function seed() {
         firstName: "Bobby",
         lastName: "Fischer",
         email: "player5@test.com",
-        hashedPassword: "password123",
+        hashedPassword: await bcrypt.hash("pa$$word123", 10),
         role: "PLAYER",
         rating: 1400,
       },
@@ -92,7 +92,7 @@ async function seed() {
         firstName: "Hou",
         lastName: "Yifan",
         email: "player6@test.com",
-        hashedPassword: "password123",
+        hashedPassword: await bcrypt.hash("pa$$word123", 10),
         role: "PLAYER",
         rating: 1500,
       },
@@ -105,7 +105,7 @@ async function seed() {
         firstName: "Viswanathan",
         lastName: "Anand",
         email: "player7@test.com",
-        hashedPassword: "password123",
+        hashedPassword: await bcrypt.hash("pa$$word123", 10),
         role: "PLAYER",
         rating: 1600,
       },
@@ -118,7 +118,7 @@ async function seed() {
         firstName: "Vladimir",
         lastName: "Kramnik",
         email: "player8@test.com",
-        hashedPassword: "password123",
+        hashedPassword: await bcrypt.hash("pa$$word123", 10),
         role: "PLAYER",
         rating: 1700,
       },
@@ -228,4 +228,5 @@ seed()
   })
   .finally(async () => {
     await prisma.$disconnect();
+    console.log(`Prisma disconnected`)
   });
