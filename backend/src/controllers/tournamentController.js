@@ -120,11 +120,13 @@ async function generateNextRound(req, res) {
     let nextRoundNumber = tournament.rounds.length + 1;
     // 1. Determine if last round finished and who advances
     const lastRound = tournament.rounds[0];
-    const notFinished = lastRound.matches.filter(
-      (m) => m.winnerPlayerId == null,
-    );
-    if (notFinished.length > 0) {
-      return res.status(404).json({ error: "Last round not finished" });
+    if (lastRound) {
+      const notFinished = lastRound.matches.filter(
+        (m) => m.winnerPlayerId == null,
+      );
+      if (notFinished.length > 0) {
+        return res.status(404).json({ error: "Last round not finished" });
+      }
     }
     if (tournament.rounds.length === 0) {
       playersToPair = tournament.tournamentPlayers;
