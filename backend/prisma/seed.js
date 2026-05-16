@@ -1,5 +1,5 @@
 const prisma = require("../src/prisma");
-const bcrypt = require("bcryptjs")
+const bcrypt = require("bcryptjs");
 async function seed() {
   await prisma.$transaction(async (tx) => {
     // delete existing sample tournament
@@ -92,7 +92,7 @@ async function seed() {
         firstName: "Hou",
         lastName: "Yifan",
         email: "player6@test.com",
-        hashedPassword: "password123",
+        hashedPassword: await bcrypt.hash("pa$$word123", 10),
         role: "PLAYER",
         rating: 1500,
       },
@@ -228,5 +228,5 @@ seed()
   })
   .finally(async () => {
     await prisma.$disconnect();
-    console.log(`Prisma disconnected`)
+    console.log(`Prisma disconnected`);
   });
