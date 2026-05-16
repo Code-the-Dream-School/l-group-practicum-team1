@@ -92,7 +92,7 @@ async function seed() {
         firstName: "Hou",
         lastName: "Yifan",
         email: "player6@test.com",
-        hashedPassword: "password123",
+        hashedPassword: await bcrypt.hash("pa$$word123", 10),
         role: "PLAYER",
         rating: 1500,
       },
