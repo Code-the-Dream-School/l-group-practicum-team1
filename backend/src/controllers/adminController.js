@@ -3,6 +3,7 @@ require("dotenv").config();
 const TournamentSchema = require("../../validations/tournamentValidation.js");
 const prisma = require("../prisma.js");
 
+//Create Tournament
 const createTournament = async (req, res) => {
   if (!req.body) req.body = {};
 
@@ -50,7 +51,35 @@ const createTournament = async (req, res) => {
   }
 };
 
-// const getTournament = async (req, res) => {}
+//Get tournament
+const getTournament = async (req, res) => {
+  if (!req.params){
+    return res.status(400).json({ message: 'Something went wrong'})
+  }
+
+  try {
+    const { id } = req.params;
+
+
+    const tournament = await prisma.tournament.findUnique({
+      where: { id },
+    });
+
+    if (!tournament) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: "Tournament not found" });
+    }
+
+    res.status(200).json({ message: `${tournament.name} found`, tournament });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Tournament not found'})
+  }
+};
+
+
+
 // const getActiveTournaments = async (req, res) => {}
 // const deleteTournament = async (req, res) => {}
 
@@ -60,4 +89,4 @@ const createTournament = async (req, res) => {
 
 // const deleteUsers = async (req, res) => {}
 
-module.exports = createTournament;
+module.exports = { createTournament, getTournament };
