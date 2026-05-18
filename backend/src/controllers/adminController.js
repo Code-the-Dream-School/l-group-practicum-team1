@@ -53,13 +53,12 @@ const createTournament = async (req, res) => {
 
 //Get tournament
 const getTournament = async (req, res) => {
-  if (!req.params){
-    return res.status(400).json({ message: 'Something went wrong'})
+  if (!req.params) {
+    return res.status(400).json({ message: "Something went wrong" });
   }
 
   try {
     const { id } = req.params;
-
 
     const tournament = await prisma.tournament.findUnique({
       where: { id },
@@ -74,19 +73,62 @@ const getTournament = async (req, res) => {
     res.status(200).json({ message: `${tournament.name} found`, tournament });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Tournament not found'})
+    res.status(500).json({ message: "Tournament not found" });
   }
 };
 
+//Delete Tournament
+const deleteTournament = async (req, res) => {
+  const { id } = req.params;
 
+  if (!id) {
+    return res.status(400).json({ message: "Tournament not Found" });
+  }
+  try {
+    const deleteTourney = await prisma.tournament.delete({
+      where: { id },
+    });
+    return res.status(StatusCodes.OK).json({
+      message: `${deleteTourney.name} has been deleted`,
+      tournament: deleteTourney,
+    });
+  } catch (error) {
+    if (error.code === "P2025") {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "Tournament not found" });
+    }
+    console.error(error);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "Something went wrong" });
+  }
+};
 
-// const getActiveTournaments = async (req, res) => {}
-// const deleteTournament = async (req, res) => {}
+const getUsers = async (req, res) => {
+  try {
+    const allUsers = await prisma.user.findMany({
+      select: {
+        firstName: true,
+        lastName: true,
+        rating: true,
 
-// const createUser = async (req, res) => {}
+      },
+      where: {role: {not: 'ADMIN'}}
+    });
+    return res.status(200).json(allUsers);
+  } catch (error) {
+    console.error(error);
+  }
+};
 
-// const getUsers= async (req, res) => {}
+// const createUsers = async (req, res) => {};
 
 // const deleteUsers = async (req, res) => {}
 
-module.exports = { createTournament, getTournament };
+module.exports = {
+  createTournament,
+  getTournament,
+  deleteTournament,
+  getUsers,
+};
