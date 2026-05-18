@@ -12,7 +12,7 @@ export default function Button({
 
   return (
     <button
-      className={`rounded-lg px-4 py-2 font-medium transition ${styles[variant]} ${className}`}
+      className={`rounded-lg px-4 py-2 font-medium transition cursor-pointer ${styles[variant]} ${className}`}
       {...props}
     >
       {children}
