@@ -2,9 +2,18 @@ const prisma = require("../src/prisma");
 const bcrypt = require("bcryptjs")
 async function seed() {
   await prisma.$transaction(async (tx) => {
-    // delete existing sample tournament
+    // delete existing sample tournaments
     await tx.tournament.deleteMany({
-      where: { name: "Test Chess Tournament" },
+      where: {
+        name: {
+          in: [
+            "Test Chess Tournament",
+            "Summer Rapid Chess Cup",
+            "Online Blitz Battle",
+            "Fall Classical Championship",
+          ],
+        },
+      },
     });
 
     const admin = await tx.user.upsert({
@@ -124,97 +133,138 @@ async function seed() {
       },
     });
 
-    const tournament = await tx.tournament.create({
-      data: {
-        name: "Test Chess Tournament",
-        format: "OFFLINE",
-        location: "New York City",
-        timeControl: "10+0",
-        totalRounds: 3,
-        category: "Beginner",
-        tournamentType: "SINGLE",
-        startDate: new Date("2026-05-01"),
-        endDate: new Date("2026-05-01"),
-        published: true,
-        tournamentAdmins: {
-          create: {
-            userId: admin.id,
+    async function createTournament({
+      name,
+      location,
+      timeControl,
+      category,
+      startDate,
+      format,
+      published,
+    }) {
+      const tournament = await tx.tournament.create({
+        data: {
+          name,
+          format,
+          location,
+          timeControl,
+          totalRounds: 3,
+          category,
+          tournamentType: "SINGLE",
+          startDate: new Date(startDate),
+          endDate: new Date(startDate),
+          published,
+          tournamentAdmins: {
+            create: { userId: admin.id },
+          },
+          tournamentPlayers: {
+            create: [
+              { userId: player1.id, seedNumber: 1 },
+              { userId: player2.id, seedNumber: 2 },
+              { userId: player3.id, seedNumber: 3 },
+              { userId: player4.id, seedNumber: 4 },
+              { userId: player5.id, seedNumber: 5 },
+              { userId: player6.id, seedNumber: 6 },
+              { userId: player7.id, seedNumber: 7 },
+              { userId: player8.id, seedNumber: 8 },
+            ],
           },
         },
-        tournamentPlayers: {
-          create: [
-            { userId: player1.id, seedNumber: 1 },
-            { userId: player2.id, seedNumber: 2 },
-            { userId: player3.id, seedNumber: 3 },
-            { userId: player4.id, seedNumber: 4 },
-            { userId: player5.id, seedNumber: 5 },
-            { userId: player6.id, seedNumber: 6 },
-            { userId: player7.id, seedNumber: 7 },
-            { userId: player8.id, seedNumber: 8 },
-          ],
+      });
+
+      const round = await tx.round.create({
+        data: {
+          tournamentId: tournament.id,
+          roundNumber: 1,
+          title: "Quarterfinals",
         },
-      },
+      });
+
+      const tournamentPlayers = await tx.tournamentPlayer.findMany({
+        where: { tournamentId: tournament.id },
+        orderBy: { seedNumber: "asc" },
+      });
+
+      await tx.match.createMany({
+        data: [
+          {
+            roundId: round.id,
+            player1Id: tournamentPlayers[0].id,
+            player2Id: tournamentPlayers[7].id,
+            scheduledAt: new Date(`${startDate}T14:00:00`),
+            player1Color: "WHITE",
+            player2Color: "BLACK",
+            status: "PENDING",
+          },
+          {
+            roundId: round.id,
+            player1Id: tournamentPlayers[1].id,
+            player2Id: tournamentPlayers[6].id,
+            scheduledAt: new Date(`${startDate}T14:30:00`),
+            player1Color: "WHITE",
+            player2Color: "BLACK",
+            status: "PENDING",
+          },
+          {
+            roundId: round.id,
+            player1Id: tournamentPlayers[2].id,
+            player2Id: tournamentPlayers[5].id,
+            scheduledAt: new Date(`${startDate}T15:00:00`),
+            player1Color: "WHITE",
+            player2Color: "BLACK",
+            status: "PENDING",
+          },
+          {
+            roundId: round.id,
+            player1Id: tournamentPlayers[3].id,
+            player2Id: tournamentPlayers[4].id,
+            scheduledAt: new Date(`${startDate}T15:30:00`),
+            player1Color: "WHITE",
+            player2Color: "BLACK",
+            status: "PENDING",
+          },
+        ],
+      });
+    }
+
+    await createTournament({
+      name: "Test Chess Tournament",
+      format: "OFFLINE",
+      location: "New York City",
+      timeControl: "10+0",
+      category: "Beginner",
+      startDate: "2026-05-01",
+      published: true,
     });
 
-    const round = await tx.round.create({
-      data: {
-        tournamentId: tournament.id,
-        roundNumber: 1,
-        title: "Quarterfinals",
-      },
+    await createTournament({
+      name: "Summer Rapid Chess Cup",
+      format: "OFFLINE",
+      location: "Paris",
+      timeControl: "15+10",
+      category: "Intermediate",
+      startDate: "2026-06-15",
+      published: true,
     });
 
-    const tournamentPlayers = await tx.tournamentPlayer.findMany({
-      where: { tournamentId: tournament.id },
-      orderBy: { seedNumber: "asc" },
+    await createTournament({
+      name: "Online Blitz Battle",
+      format: "ONLINE",
+      location: null,
+      timeControl: "5+0",
+      category: "Open",
+      startDate: "2026-07-10",
+      published: true,
     });
 
-    await tx.match.create({
-      data: {
-        roundId: round.id,
-        player1Id: tournamentPlayers[0].id,
-        player2Id: tournamentPlayers[7].id,
-        scheduledAt: new Date("2026-05-01T14:00:00"),
-        player1Color: "WHITE",
-        player2Color: "BLACK",
-        status: "PENDING",
-      },
-    });
-
-    await tx.match.create({
-      data: {
-        roundId: round.id,
-        player1Id: tournamentPlayers[1].id,
-        player2Id: tournamentPlayers[6].id,
-        scheduledAt: new Date("2026-05-01T14:30:00"),
-        player1Color: "WHITE",
-        player2Color: "BLACK",
-        status: "PENDING",
-      },
-    });
-
-    await tx.match.create({
-      data: {
-        roundId: round.id,
-        player1Id: tournamentPlayers[2].id,
-        player2Id: tournamentPlayers[5].id,
-        scheduledAt: new Date("2026-05-01T15:00:00"),
-        player1Color: "WHITE",
-        player2Color: "BLACK",
-        status: "PENDING",
-      },
-    });
-
-    await tx.match.create({
-      data: {
-        roundId: round.id,
-        player1Id: tournamentPlayers[3].id,
-        player2Id: tournamentPlayers[4].id,
-        scheduledAt: new Date("2026-05-01T15:30:00"),
-        player1Color: "WHITE",
-        player2Color: "BLACK",
-        status: "PENDING",
-      },
+    await createTournament({
+      name: "Fall Classical Championship",
+      format: "OFFLINE",
+      location: "Tokyo",
+      timeControl: "30+30",
+      category: "Advanced",
+      startDate: "2026-09-20",
+      published: false,
     });
   });
 

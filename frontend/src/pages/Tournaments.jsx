@@ -1,0 +1,106 @@
+import { useState, useEffect } from "react";
+import PageLayout from "../components/layout/PageLayout";
+import Button from "../components/ui/Button";
+import SearchInput from "../components/ui/SearchInput";
+import TournamentRow from "../components/tournaments/TournamentRow";
+import Pagination from "../components/ui/Pagination";
+import { Link } from "react-router-dom";
+
+export default function Tournaments() {
+  const [tournaments, setTournaments] = useState([]);
+  const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    async function fetchTournaments() {
+      try {
+        setIsLoading(true);
+
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/tournaments?page=${currentPage}&limit=${tournamentsPerPage}&search=${search}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch tournaments");
+        }
+
+        const data = await response.json();
+
+        setTournaments(data.data);
+        setTotalPages(data.pagination.totalPages);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchTournaments();
+  }, [currentPage, search]);
+
+  const tournamentsPerPage = 2;
+
+  return (
+    <PageLayout>
+      <div className="mb-10 flex items-center justify-between">
+        <SearchInput value={search} onChange={setSearch} />
+        <Link to="/tournaments/create">
+          <Button>Create Tournament</Button>
+        </Link>{" "}
+      </div>
+
+      {isLoading ? (
+        <p className="text-center py-10">Loading...</p>
+      ) : !tournaments || tournaments?.length === 0 ? (
+        search ? (
+          <p className="text-center py-10">
+            No tournaments found for "{search}"
+          </p>
+        ) : (
+          <div className="text-center py-10 space-y-4">
+            <p>No tournaments yet</p>
+          </div>
+        )
+      ) : (
+        <>
+          <table className="w-full text-left">
+            <thead>
+              <tr className="border-b">
+                <th className="py-3">Name</th>
+                <th>Location</th>
+                <th>Format</th>
+                <th>Category</th>
+                <th>Time Control</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {tournaments?.map((tournament) => (
+                <TournamentRow key={tournament.id} tournament={tournament} />
+              ))}
+            </tbody>
+          </table>
+
+          {totalPages <= 1 ? null : (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          )}
+        </>
+      )}
+    </PageLayout>
+  );
+}
