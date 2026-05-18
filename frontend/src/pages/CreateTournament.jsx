@@ -7,17 +7,17 @@ import FormField from "../components/ui/FormField";
 import PageLayout from "../components/layout/PageLayout";
 import TournamentPlayerSelector from "../components/tournaments/TournamentPlayerSelector";
 
-const initialTournament = {
-  name: "",
-  location: "",
-  timeControl: "",
-  format: "Single Elimination",
-  totalRounds: "",
-  category: "",
-  tournamentType: "",
-  startDate: "",
-  endDate: "",
-};
+  const initialTournament = {
+    name: "",
+    location: "",
+    timeControl: "",
+    format: formats[0],
+    totalRounds: totalRoundsDefault,
+    category: "",
+    tournamentType: tournametTypes[0],
+    startDate: "",
+    endDate: "",
+  };
 
 export default function CreateTournamentForm() {
   const [step, setStep] = useState(1);
