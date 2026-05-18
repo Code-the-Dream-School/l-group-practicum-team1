@@ -105,6 +105,7 @@ const deleteTournament = async (req, res) => {
   }
 };
 
+//getUsers firstName, lastName, and rating
 const getUsers = async (req, res) => {
   try {
     const allUsers = await prisma.user.findMany({
