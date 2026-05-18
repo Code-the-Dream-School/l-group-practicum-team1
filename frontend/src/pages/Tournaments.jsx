@@ -4,6 +4,7 @@ import Button from "../components/ui/Button";
 import SearchInput from "../components/ui/SearchInput";
 import TournamentRow from "../components/tournaments/TournamentRow";
 import Pagination from "../components/ui/Pagination";
+import { Link } from "react-router-dom";
 
 export default function Tournaments() {
   const [tournaments, setTournaments] = useState([]);
@@ -51,7 +52,9 @@ export default function Tournaments() {
     <PageLayout>
       <div className="mb-10 flex items-center justify-between">
         <SearchInput value={search} onChange={setSearch} />
-        <Button>+ Create Tournament</Button>
+        <Link to="/tournaments/create">
+          <Button>Create Tournament</Button>
+        </Link>{" "}
       </div>
 
       {isLoading ? (
