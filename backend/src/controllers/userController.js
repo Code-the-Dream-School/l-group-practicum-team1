@@ -52,7 +52,13 @@ const register = async (req, res) => {
     }
     const token = generateToken(user.id, res)
     res.status(201).json({
-      message: "User created", token: token
+      message: "User created", 
+      token: token,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.firstName
+      }
     });
   } catch (err) {
     return res.status(500).json({ message: "Server error" });
