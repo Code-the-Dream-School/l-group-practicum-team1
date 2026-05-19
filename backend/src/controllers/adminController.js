@@ -113,16 +113,21 @@ const getUsers = async (req, res) => {
         firstName: true,
         lastName: true,
         rating: true,
-
       },
-      where: {role: {not: 'ADMIN'}}
+      where: { role: { not: "ADMIN" } },
     });
     return res.status(200).json(allUsers);
   } catch (error) {
     console.error(error);
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .json({ message: "No users Found" });
   }
 };
 
+
+//Need to ask questions about creating multiple users at once. 
+//Need to ask questions about deleting one user at a time and keeping track of the user ratings. 
 // const createUsers = async (req, res) => {};
 
 // const deleteUsers = async (req, res) => {}
