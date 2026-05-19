@@ -1,7 +1,10 @@
 import { useState } from "react";
 import "./LoginModal.css";
 
-function LoginModal({ isOpen, onClose }) {
+import { loginUser } from "../../services/authService";
+import { saveAuthData } from "../../utils/auth";
+
+function LoginModal({ isOpen, onClose, onSwitchToRegister, onLoginSuccess }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -21,43 +24,22 @@ function LoginModal({ isOpen, onClose }) {
     }
 
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/auth/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-            password,
-          }),
-        }
-      );
-
-      let data;
-
-      try {
-        data = await response.json();
-      } catch {
-        data = {};
-      }
-
-      if (!response.ok) {
-        setError(data.message || "Login failed");
-        return;
-      }
+      const data = await loginUser(email, password);
 
       console.log("Login response:", data);
+
+      saveAuthData(data);
+
+      onLoginSuccess();
 
       setMessage(data.message || "Login successful");
 
       setEmail("");
       setPassword("");
 
-      // localStorage.setItem("token", data.token);
+      onClose();
     } catch (err) {
-      setError("Could not connect to the server");
+      setError(err.message || "Could not login");
     }
   }
 
@@ -103,6 +85,12 @@ function LoginModal({ isOpen, onClose }) {
 
           <button type="submit">Sign In</button>
         </form>
+        <p className="auth-switch-text">
+          Don’t have an account yet?{" "}
+          <button className="auth-switch-button" onClick={onSwitchToRegister}>
+            Register
+          </button>
+        </p>
       </div>
     </div>
   );
