@@ -1,0 +1,29 @@
+.tournament-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: white;
+  color: #111827;
+  padding: 1.25rem;
+  border-radius: 16px;
+  text-decoration: none;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  transition: 0.2s ease;
+}
+
+.tournament-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.tournament-card h3 {
+  font-size: 1.15rem;
+}
+
+.tournament-stats {
+  display: flex;
+  justify-content: space-between;
+  margin-top: auto;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
