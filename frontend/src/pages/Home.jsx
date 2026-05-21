@@ -1,46 +1,103 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
+import Header from "../components/layout/Header";
 import LoginModal from "../components/auth/LoginModal";
-import mockTournaments, { getTournamentStatus } from "../data/mockTournaments";
+import RegisterModal from "../components/auth/RegisterModal";
+import TournamentCard from "../components/tournaments/TournamentCard";
+import { getTournaments } from "../services/tournamentService";
+import { isLoggedIn, logout } from "../utils/auth";
 
 import "./Home.css";
 
 function Home() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(isLoggedIn());
   const [activeTab, setActiveTab] = useState("live");
 
-  const liveTournaments = mockTournaments.filter(
+  const [tournaments, setTournaments] = useState([]);
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadTournaments() {
+      try {
+        const data = await getTournaments();
+        setTournaments(data);
+      } catch (err) {
+        setError(err.message || "Could not load tournaments");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadTournaments();
+  }, []);
+
+  function openLogin() {
+    setIsRegisterOpen(false);
+    setIsLoginOpen(true);
+  }
+
+  function openRegister() {
+    setIsLoginOpen(false);
+    setIsRegisterOpen(true);
+  }
+
+  function handleLogout() {
+    logout();
+    setLoggedIn(false);
+  }
+
+  function handleLoginSuccess() {
+    setLoggedIn(true);
+  }
+
+  function getTournamentStatus(tournament) {
+    const today = new Date();
+    const startDate = new Date(tournament.startDate);
+    const endDate = tournament.endDate ? new Date(tournament.endDate) : null;
+
+    if (startDate > today) {
+      return "upcoming";
+    }
+
+    if (endDate && endDate < today) {
+      return "completed";
+    }
+
+    return "live";
+  }
+
+  const liveTournaments = tournaments.filter(
     (tournament) => getTournamentStatus(tournament) === "live"
   );
 
-  const upcomingTournaments = mockTournaments.filter(
+  const upcomingTournaments = tournaments.filter(
     (tournament) => getTournamentStatus(tournament) === "upcoming"
   );
 
-  const tournamentsToShow =
-    activeTab === "live" ? liveTournaments : upcomingTournaments;
+  const completedTournaments = tournaments.filter(
+    (tournament) => getTournamentStatus(tournament) === "completed"
+  );
+
+  let tournamentsToShow = liveTournaments;
+
+  if (activeTab === "upcoming") {
+    tournamentsToShow = upcomingTournaments;
+  }
+
+  if (activeTab === "completed") {
+    tournamentsToShow = completedTournaments;
+  }
 
   return (
     <main className="home-page">
-      <header className="home-header">
-        <h1 className="app-title">Chess Tournament App</h1>
-
-        <button className="login-button" onClick={() => setIsLoginOpen(true)}>
-          Login
-        </button>
-      </header>
-
-      <section className="dev-links">
-        <h2>Temporary Development Links</h2>
-
-        <div className="dev-links-list">
-          <a href="/admin/tournaments/tournament-1">Admin Tournament View</a>
-
-          <a href="/admin/tournaments/new">Create Tournament</a>
-
-          <a href="/admin/tournaments/tournament-1/results">Results Preview</a>
-        </div>
-      </section>
+      <Header
+        loggedIn={loggedIn}
+        onLoginClick={openLogin}
+        onLogout={handleLogout}
+      />
 
       <nav className="tournament-tabs">
         <button
@@ -58,35 +115,48 @@ function Home() {
         >
           Upcoming Tournaments
         </button>
+
+        <button
+          className={
+            activeTab === "completed" ? "tab-button active" : "tab-button"
+          }
+          onClick={() => setActiveTab("completed")}
+        >
+          Finished Tournaments
+        </button>
       </nav>
 
       <section className="tournaments-section">
-        <div className="tournament-grid">
-          {tournamentsToShow.length > 0 ? (
-            tournamentsToShow.map((tournament) => (
-              <article className="tournament-card" key={tournament.id}>
-                <h3>{tournament.name}</h3>
+        {isLoading && <p>Loading tournaments...</p>}
 
-                <p>{tournament.start_date}</p>
+        {error && <p className="error-message">{error}</p>}
 
-                <p>{tournament.location}</p>
-
-                <p>{tournament.time_control}</p>
-
-                <div className="tournament-stats">
-                  <span>{tournament.total_rounds} Rounds</span>
-
-                  <span>{tournament.tournament_type}</span>
-                </div>
-              </article>
-            ))
-          ) : (
-            <p>No tournaments found.</p>
-          )}
-        </div>
+        {!isLoading && !error && (
+          <div className="tournament-grid">
+            {tournamentsToShow.length > 0 ? (
+              tournamentsToShow.map((tournament) => (
+                <TournamentCard key={tournament.id} tournament={tournament} />
+              ))
+            ) : (
+              <p>No tournaments found.</p>
+            )}
+          </div>
+        )}
       </section>
 
-      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
+      <LoginModal
+        isOpen={isLoginOpen}
+        onClose={() => setIsLoginOpen(false)}
+        onSwitchToRegister={openRegister}
+        onLoginSuccess={handleLoginSuccess}
+      />
+
+      <RegisterModal
+        isOpen={isRegisterOpen}
+        onClose={() => setIsRegisterOpen(false)}
+        onSwitchToLogin={openLogin}
+        onRegisterSuccess={handleLoginSuccess}
+      />
     </main>
   );
 }
