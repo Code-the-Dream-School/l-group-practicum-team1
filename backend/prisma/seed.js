@@ -1,5 +1,5 @@
 const prisma = require("../src/prisma");
-const bcrypt = require("bcryptjs")
+const bcrypt = require("bcryptjs");
 async function seed() {
   await prisma.$transaction(async (tx) => {
     // delete existing sample tournaments
@@ -278,5 +278,5 @@ seed()
   })
   .finally(async () => {
     await prisma.$disconnect();
-    console.log(`Prisma disconnected`)
+    console.log(`Prisma disconnected`);
   });
