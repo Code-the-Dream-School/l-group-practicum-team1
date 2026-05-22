@@ -125,16 +125,63 @@ const getUsers = async (req, res) => {
   }
 };
 
-
-//Need to ask questions about creating multiple users at once. 
-//Need to ask questions about deleting one user at a time and keeping track of the user ratings. 
+//Need to ask questions about creating multiple users at once.
+//Need to ask questions about deleting one user at a time and keeping track of the user ratings.
 // const createUsers = async (req, res) => {};
 
 // const deleteUsers = async (req, res) => {}
+
+async function searchUsers(req, res) {
+  const searchQuery = req.query.search;
+  console.log("req.query====", req.query);
+  if (!searchQuery || searchQuery.trim().length < 1) {
+    return res.status(400).json({
+      error: "Search query must be at least 1 characters long",
+    });
+  }
+
+  // ????? Get limit from query (default to 20)
+  const limit = parseInt(req.query.limit) || 20;
+
+  // Construct search patterns outside the query for proper parameterization
+  const searchPattern = `%${searchQuery}%`;
+  const exactMatch = searchQuery;
+  const startsWith = `${searchQuery}%`;
+
+  // Use raw SQL for complex text search with parameterized queries
+  const searchResults = await prisma.$queryRaw`
+SELECT 
+      u.id,
+      u.first_name as "firstName",
+      u.last_name as "lastName",
+      u.rating
+    FROM "user" u
+    WHERE (
+      u.first_name ILIKE ${searchPattern}
+      OR u.last_name ILIKE ${searchPattern}
+    )
+    AND u.role = 'PLAYER'
+    ORDER BY 
+      CASE 
+        WHEN u.last_name ILIKE ${exactMatch} THEN 1
+        WHEN u.last_name ILIKE ${startsWith} THEN 2
+        WHEN u.last_name ILIKE ${searchPattern} THEN 3
+        ELSE 4
+      END,
+      u.created_at DESC
+    LIMIT ${limit}`;
+
+  res.status(200).json({
+    results: searchResults,
+    query: searchQuery,
+    count: searchResults.length,
+  });
+}
 
 module.exports = {
   createTournament,
   getTournament,
   deleteTournament,
   getUsers,
+  searchUsers,
 };
