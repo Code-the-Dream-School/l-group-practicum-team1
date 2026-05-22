@@ -1,9 +1,18 @@
-import PageLayout from "../components/layout/PageLayout";
+import Header from "../components/layout/Header";
+import { useParams } from "react-router-dom";
 
-export default function TournamentDetails() {
+function TournamentDetails() {
+  const { tournamentId } = useParams();
+
   return (
-    <PageLayout>
-      <p>Here is where the tournament details will be displayed.</p>
-    </PageLayout>
+    <main>
+      <Header loggedIn={false} />
+
+      <h1>Tournament Details</h1>
+
+      <p>{tournamentId}</p>
+    </main>
   );
 }
+
+export default TournamentDetails;
