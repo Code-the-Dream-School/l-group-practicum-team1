@@ -25,7 +25,6 @@ model User {
 
   tournamentPlayers TournamentPlayer[]
   tournamentAdmins  TournamentAdmin[]
-  tournamentPlayers TournamentPlayer[]
 
   @@map("user")
 }
