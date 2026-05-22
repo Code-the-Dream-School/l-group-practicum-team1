@@ -12,59 +12,46 @@ export default function TournamentPlayerSelector({
   const [players, setPlayers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const mockPlayers = [
-    { id: 1, firstName: "John", lastName: "Miller", rating: 1500 },
-    { id: 2, firstName: "Anna", lastName: "Smith", rating: 1200 },
-    { id: 3, firstName: "Anna", lastName: "Brown", rating: 1300 },
-    { id: 4, firstName: "Anastasia", lastName: "Lee", rating: 1100 },
-    { id: 5, firstName: "Jon", lastName: "Miller", rating: 1100 },
-  ];
+  const token = localStorage.getItem("token");
 
-  // const searchResults = mockPlayers.filter((player) => {
-  //   const fullName = `${player.firstName} ${player.lastName}`.toLowerCase();
-  //   return (
-  //     search &&
-  //     fullName.includes(search.toLowerCase()) &&
-  //     !selectedPlayers.some((selected) => selected.id === player.id)
-  //   );
-  // });
+  useEffect(() => {
+    async function fetchPlayers() {
+      if (!search.length) return;
+      try {
+        setIsLoading(true);
 
-  // useEffect(() => {
-  //   async function fetchPlayers() {
-  //     try {
-  //       setIsLoading(true);
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/admin/searchUsers?search=${search}`,
 
-  //       const response = await fetch(
-  //         `${import.meta.env.VITE_API_URL}/api/players?search=${search}`,
-  //         {
-  //           method: "GET",
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //           },
-  //         },
-  //       );
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
 
-  //       if (!response.ok) {
-  //         throw new Error("Failed to fetch players");
-  //       }
+        if (!response.ok) {
+          throw new Error("Failed to fetch players");
+        }
 
-  //       const data = await response.json();
+        const data = await response.json();
 
-  //       setPlayers(data.data);
-  //     } catch (error) {
-  //       console.error(error);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   }
+        setPlayers(data.results);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
 
-  //   fetchPlayers();
-  // }, []);
+    fetchPlayers();
+  }, [search]);
 
   const filteredPlayers = useMemo(() => {
     if (!search.trim()) return [];
 
-    return mockPlayers.filter((player) => {
+    return players.filter((player) => {
       const fullName = `${player.firstName} ${player.lastName}`.toLowerCase();
       const alreadySelected = selectedPlayers.some(
         (selected) => selected.id === player.id,
@@ -72,7 +59,7 @@ export default function TournamentPlayerSelector({
 
       return fullName.includes(search.toLowerCase()) && !alreadySelected;
     });
-  }, [mockPlayers, selectedPlayers, search]);
+  }, [players, selectedPlayers, search]);
 
   function handleSelectPlayer(player) {
     if (maxPlayers && selectedPlayers.length >= maxPlayers) return;
