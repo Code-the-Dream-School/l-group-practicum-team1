@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
-
 import Home from "./pages/Home";
 import TournamentDetails from "./pages/TournamentDetails";
+import CreateTournament from "./pages/CreateTournament";
 
 function App() {
   return (
@@ -11,6 +11,7 @@ function App() {
         path="/tournaments/:tournamentId"
         element={<TournamentDetails />}
       />
+      <Route path="/tournaments/create" element={<CreateTournament />} />
     </Routes>
   );
 }

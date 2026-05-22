@@ -1,0 +1,14 @@
+.search-input {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.search-label {
+  font-weight: 600;
+}
+
+.search-field {
+  max-width: 448px;
+  width: 100%;
+}
