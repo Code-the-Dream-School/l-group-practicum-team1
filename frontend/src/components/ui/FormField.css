@@ -4,17 +4,13 @@
   gap: 4px;
 }
 
-.form-label {
-  font-weight: 500;
-}
-
 .form-error {
   font-size: 14px;
-  color: #dc2626;
+  color: red;
   margin-top: 2px;
 }
 
 .form-field.error input,
 .form-field.error select {
-  border-color: #dc2626;
+  border-color: red;
 }

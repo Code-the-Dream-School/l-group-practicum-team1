@@ -1,7 +1,7 @@
 .select {
-  width: 100%;
+  width: 50%;
   border-radius: 8px;
-  border: 1px solid #d1d5db;
+  border: 1px solid #ccc;
   padding: 8px 12px;
   outline: none;
   background-color: white;
@@ -13,9 +13,9 @@
 }
 
 .form-field.error .select {
-  border-color: #dc2626;
+  border-color: red;
 }
 
 .form-field.error .select:focus {
-  border-color: #dc2626;
+  border-color: red;
 }

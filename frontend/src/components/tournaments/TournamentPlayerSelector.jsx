@@ -17,6 +17,7 @@ export default function TournamentPlayerSelector({
     { id: 2, firstName: "Anna", lastName: "Smith", rating: 1200 },
     { id: 3, firstName: "Anna", lastName: "Brown", rating: 1300 },
     { id: 4, firstName: "Anastasia", lastName: "Lee", rating: 1100 },
+    { id: 5, firstName: "Jon", lastName: "Miller", rating: 1100 },
   ];
 
   // const searchResults = mockPlayers.filter((player) => {
@@ -115,8 +116,7 @@ export default function TournamentPlayerSelector({
 
       <div>
         <h3 className="player-selector-title selected-title">
-          Selected Players for this Tournament: {selectedPlayers.length} /{" "}
-          {maxPlayers || "N"}
+          Selected Players: {selectedPlayers.length} / {maxPlayers || "N"}
         </h3>
 
         {selectedPlayers.length === 0 ? (

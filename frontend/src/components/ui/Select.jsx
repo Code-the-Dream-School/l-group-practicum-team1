@@ -1,8 +1,14 @@
 import "./Select.css";
 
-export default function Select({ value, name, onChange, options = [] }) {
+export default function Select({ id, value, name, onChange, options = [] }) {
   return (
-    <select name={name} className="select" value={value} onChange={onChange}>
+    <select
+      id={id}
+      name={name}
+      className="select"
+      value={value}
+      onChange={onChange}
+    >
       {options.map((opt) => (
         <option key={opt.value} value={opt.value}>
           {opt.label}
