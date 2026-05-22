@@ -1,9 +1,9 @@
 export default function FormField({ label, children, error }) {
   return (
-    <div className="space-y-1">
-      <label className="block font-medium">{label}</label>
+    <div className={`form-field ${error ? "error" : ""}`}>
+      <label className="form-label">{label}</label>
       {children}
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="form-error">{error}</p>}
     </div>
   );
 }

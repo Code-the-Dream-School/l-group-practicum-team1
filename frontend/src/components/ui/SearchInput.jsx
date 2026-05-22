@@ -1,4 +1,5 @@
 import Input from "./Input";
+import "./SearchInput.css";
 
 export default function SearchInput({
   value,
@@ -6,13 +7,13 @@ export default function SearchInput({
   placeholder = "Search...",
 }) {
   return (
-    <div className="flex items-center gap-3">
-      <label className="font-semibold">Search:</label>
+    <div className="search-input">
+      <label className="search-label">Search:</label>
       <Input
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className="max-w-md"
+        className="search-field"
       />
     </div>
   );

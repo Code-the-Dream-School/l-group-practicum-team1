@@ -1,11 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import Input from "../ui/Input";
-import Button from "../ui/Button";
+import "./TournamentPlayerSelector.css";
 
 export default function TournamentPlayerSelector({
   selectedPlayers,
-  setSelectedPlayers,
-  onChange,
   onAddPlayer,
   onRemovePlayer,
   maxPlayers,
@@ -21,14 +19,14 @@ export default function TournamentPlayerSelector({
     { id: 4, firstName: "Anastasia", lastName: "Lee", rating: 1100 },
   ];
 
-  const searchResults = mockPlayers.filter((player) => {
-    const fullName = `${player.firstName} ${player.lastName}`.toLowerCase();
-    return (
-      search &&
-      fullName.includes(search.toLowerCase()) &&
-      !selectedPlayers.some((selected) => selected.id === player.id)
-    );
-  });
+  // const searchResults = mockPlayers.filter((player) => {
+  //   const fullName = `${player.firstName} ${player.lastName}`.toLowerCase();
+  //   return (
+  //     search &&
+  //     fullName.includes(search.toLowerCase()) &&
+  //     !selectedPlayers.some((selected) => selected.id === player.id)
+  //   );
+  // });
 
   // useEffect(() => {
   //   async function fetchPlayers() {
@@ -83,9 +81,9 @@ export default function TournamentPlayerSelector({
   }
 
   return (
-    <div className="space-y-8">
-      <div className="relative max-w-sm">
-        <h3 className="mb-2 text-xl font-bold">Add players:</h3>
+    <div className="player-selector">
+      <div className="player-search">
+        <h3 className="player-selector-title">Add players:</h3>
 
         <Input
           value={search}
@@ -94,17 +92,17 @@ export default function TournamentPlayerSelector({
         />
 
         {filteredPlayers.length > 0 && (
-          <ul className="absolute z-10 mt-1 w-full rounded-lg border border-gray-300 bg-white shadow">
+          <ul className="player-dropdown">
             {filteredPlayers.map((player) => (
               <li key={player.id}>
                 <button
                   type="button"
                   onClick={() => handleSelectPlayer(player)}
-                  className="w-full cursor-pointer px-3 py-2 text-left hover:bg-gray-100"
+                  className="player-dropdown-btn"
                 >
                   {player.firstName} {player.lastName}
                   {player.rating && (
-                    <span className="ml-2 text-sm text-gray-500">
+                    <span className="player-rating">
                       Rating: {player.rating}
                     </span>
                   )}
@@ -116,17 +114,17 @@ export default function TournamentPlayerSelector({
       </div>
 
       <div>
-        <h3 className="mb-6 text-xl font-bold">
+        <h3 className="player-selector-title selected-title">
           Selected Players for this Tournament: {selectedPlayers.length} /{" "}
           {maxPlayers || "N"}
         </h3>
 
         {selectedPlayers.length === 0 ? (
-          <p className="text-gray-500">No players selected yet.</p>
+          <p className="empty-text">No players selected yet.</p>
         ) : (
-          <ol className="space-y-2 text-lg">
+          <ol className="selected-player-list">
             {selectedPlayers.map((player) => (
-              <li key={player.id} className="flex gap-8">
+              <li key={player.id} className="selected-player">
                 <span>
                   {player.firstName} {player.lastName}
                 </span>
@@ -136,7 +134,7 @@ export default function TournamentPlayerSelector({
                 <button
                   type="button"
                   onClick={() => onRemovePlayer(player.id)}
-                  className="cursor-pointer font-bold hover:underline"
+                  className="remove-player-btn"
                 >
                   [Remove]
                 </button>

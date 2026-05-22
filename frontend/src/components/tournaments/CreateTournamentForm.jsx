@@ -4,6 +4,7 @@ import Input from "../ui/Input";
 import FormField from "../ui/FormField";
 import TournamentPlayerSelector from "./TournamentPlayerSelector";
 import Select from "../ui/Select";
+import "./CreateTournamentForm.css";
 
 export default function CreateTournamentForm({
   tournament,
@@ -31,14 +32,12 @@ export default function CreateTournamentForm({
   return (
     <>
       {step === 1 && (
-        <section className="p-5 border border-black rounded-2xl">
-          <h2 className="mb-8 text-center text-xl">
-            Create Tournament: Tournament Details
-          </h2>
-          <p className="mb-8 text-center text-md">Step 1 of 2</p>
+        <section className="form-section">
+          <h2 className="form-title">Create Tournament: Tournament Details</h2>
+          <p className="form-step">Step 1 of 2</p>
 
-          <div className="grid max-w-4xl grid-cols-1 gap-8 md:grid-cols-2">
-            <div className="space-y-5">
+          <div className="form-grid">
+            <div className="form-column">
               <FormField label="Name*">
                 <Input
                   name="name"
@@ -101,14 +100,14 @@ export default function CreateTournamentForm({
                     label: type,
                     value: type,
                   }))}
-                  name="format"
+                  name="tournamentType"
                   value={tournament.type}
                   onChange={handleChange}
                 />
               </FormField>
             </div>
 
-            <div className="space-y-5">
+            <div className="form-column">
               <FormField label="Start Date*">
                 <Input
                   name="startDate"
@@ -129,7 +128,7 @@ export default function CreateTournamentForm({
             </div>
           </div>
 
-          <div className="mt-24 flex justify-end">
+          <div className="form-actions end">
             <Button
               onClick={handleNext}
               disabled={!tournament.name || !tournament.totalRounds}
@@ -141,17 +140,15 @@ export default function CreateTournamentForm({
       )}
 
       {step === 2 && (
-        <section className="p-5 border border-black rounded-2xl">
-          <h2 className="mb-8 text-center text-xl">
-            Create Tournament: Add Players
-          </h2>
-          <p className="mb-8 text-center text-md">Step 2 of 2</p>
-          <div className="mb-8 font-bold">
+        <section className="form-section">
+          <h2 className="form-title">Create Tournament: Add Players</h2>
+          <p className="form-step">Step 2 of 2</p>
+          <div className="form-summary">
             <p>Tournament: {tournament.name || "[Tournament Name]"}</p>
             <p>Rounds: {tournament.totalRounds || 1}</p>
             <p>Players needed: {playersNeeded || 2}</p>
           </div>
-          <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
+          <div className="form-grid single">
             <div>
               <TournamentPlayerSelector
                 maxPlayers={playersNeeded}
@@ -163,7 +160,7 @@ export default function CreateTournamentForm({
               />
             </div>
           </div>
-          <div className="mt-24 flex justify-between">
+          <div className="form-actions space-between">
             <Button variant="secondary" onClick={handleBack}>
               Back
             </Button>

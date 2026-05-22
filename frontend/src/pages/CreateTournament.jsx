@@ -74,21 +74,19 @@ export default function CreateTournament() {
 
   return (
     <PageLayout>
-      <div className="px-8 py-6">
-        <CreateTournamentForm
-          tournament={tournament}
-          setTournament={setTournament}
-          selectedPlayers={selectedPlayers}
-          setSelectedPlayers={setSelectedPlayers}
-          playersNeeded={playersNeeded}
-          handleAddPlayer={handleAddPlayer}
-          handleRemovePlayer={handleRemovePlayer}
-          handleCreateTournament={handleCreateTournament}
-          handleChange={handleChange}
-          formats={formats}
-          tournametTypes={tournametTypes}
-        />
-      </div>
+      <CreateTournamentForm
+        tournament={tournament}
+        setTournament={setTournament}
+        selectedPlayers={selectedPlayers}
+        setSelectedPlayers={setSelectedPlayers}
+        playersNeeded={playersNeeded}
+        handleAddPlayer={handleAddPlayer}
+        handleRemovePlayer={handleRemovePlayer}
+        handleCreateTournament={handleCreateTournament}
+        handleChange={handleChange}
+        formats={formats}
+        tournametTypes={tournametTypes}
+      />
     </PageLayout>
   );
 }

@@ -1,3 +1,5 @@
+import "./Pagination.css";
+
 export default function Pagination({ currentPage, totalPages, onPageChange }) {
   if (totalPages <= 1) return null;
 
@@ -7,11 +9,11 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
   }
 
   return (
-    <div className="mt-8 flex items-center justify-center gap-2">
+    <div className="pagination">
       <button
         onClick={() => goToPage(currentPage - 1)}
         disabled={currentPage === 1}
-        className="rounded-lg border px-3 py-2 disabled:cursor-not-allowed disabled:opacity-50"
+        className="pagination-btn"
       >
         Previous
       </button>
@@ -23,11 +25,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
           <button
             key={page}
             onClick={() => goToPage(page)}
-            className={`rounded-lg border px-3 py-2 ${
-              page === currentPage
-                ? "bg-black text-white"
-                : "bg-white text-black hover:bg-gray-100"
-            }`}
+            className={`pagination-btn ${page === currentPage ? "active" : ""}`}
           >
             {page}
           </button>
@@ -37,7 +35,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
       <button
         onClick={() => goToPage(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="rounded-lg border px-3 py-2 disabled:cursor-not-allowed disabled:opacity-50"
+        className="pagination-btn"
       >
         Next
       </button>

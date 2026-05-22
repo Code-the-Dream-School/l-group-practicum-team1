@@ -1,11 +1,12 @@
-import Navbar from "./Navbar";
+import Header from "./Header";
+import "./PageLayout.css";
 
 export default function PageLayout({ children }) {
   return (
-    <div className="min-h-screen bg-white">
-      <div className="mx-auto max-w-7xl px-8">
-        <Navbar />
-        <main className="py-8">{children}</main>
+    <div className="page-layout">
+      <div className="page-container">
+        <Header />
+        <main className="page-main">{children}</main>
       </div>
     </div>
   );
