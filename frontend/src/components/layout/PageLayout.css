@@ -1,0 +1,17 @@
+.page-layout {
+  min-height: 100vh;
+  background-color: white;
+}
+
+.page-container {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1280px;
+  padding-left: 32px;
+  padding-right: 32px;
+}
+
+.page-main {
+  padding-top: 32px;
+  padding-bottom: 32px;
+}

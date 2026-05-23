@@ -1,0 +1,21 @@
+.select {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  padding: 8px 12px;
+  outline: none;
+  background-color: white;
+  transition: border-color 0.2s ease;
+}
+
+.select:focus {
+  border-color: black;
+}
+
+.form-field.error .select {
+  border-color: #dc2626;
+}
+
+.form-field.error .select:focus {
+  border-color: #dc2626;
+}
