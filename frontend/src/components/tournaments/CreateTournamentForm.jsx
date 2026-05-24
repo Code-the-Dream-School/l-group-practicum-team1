@@ -181,17 +181,12 @@ export default function CreateTournamentForm({
           </div>
 
           <div className="form-actions end">
-            <Button
-              onClick={handleNext}
-              // disabled={!tournament.name || !tournament.totalRounds}
-            >
-              Next: Add Players
-            </Button>{" "}
+            <Button onClick={handleCreateTournament}>Create</Button>{" "}
           </div>
         </section>
       )}
 
-      {step === 2 && (
+      {/* {step === 2 && (
         <section className="form-section">
           <h2 className="form-title">Create Tournament</h2>
           <p className="form-step">Step 2 of 2</p>
@@ -215,9 +210,7 @@ export default function CreateTournamentForm({
             </div>
           </div>
           <div className="form-actions space-between">
-            <Button variant="secondary" onClick={handleBack}>
-              Back
-            </Button>
+            <Button onClick={handleBack}>Back</Button>
 
             <Button
               onClick={handleCreateTournament}
@@ -227,7 +220,7 @@ export default function CreateTournamentForm({
             </Button>
           </div>{" "}
         </section>
-      )}
+      )} */}
     </>
   );
 }

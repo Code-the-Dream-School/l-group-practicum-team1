@@ -9,23 +9,24 @@
 
 /* PRIMARY */
 .btn-primary {
-  background-color: black;
-  color: white;
+  background-color: buttonface;
+  color: black;
+  border: none;
 }
 
 .btn-primary:hover {
-  background-color: #1f2937;
+  background-color: #f3f4f6;
 }
 
 /* SECONDARY */
 .btn-secondary {
-  background-color: white;
-  color: black;
+  background-color: black;
+  color: white;
   border: 1px solid #d1d5db;
 }
 
 .btn-secondary:hover {
-  background-color: #f3f4f6;
+  background-color: #1f2937;
 }
 
 /* DANGER */
