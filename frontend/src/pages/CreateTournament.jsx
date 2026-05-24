@@ -27,6 +27,7 @@ export default function CreateTournament() {
 
   const [tournament, setTournament] = useState(initialTournament);
   const [selectedPlayers, setSelectedPlayers] = useState([]);
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
@@ -37,6 +38,34 @@ export default function CreateTournament() {
     return 2 ** rounds;
   }, [tournament.totalRounds]);
 
+  function validate() {
+    const newErrors = {};
+
+    if (!tournament.name.trim()) {
+      newErrors.name = "Name is required";
+    }
+
+    if (!tournament.timeControl.trim()) {
+      newErrors.timeControl = "Time control is required";
+    }
+
+    if (!tournament.format) {
+      newErrors.format = "Format is required";
+    }
+
+    if (!tournament.totalRounds || Number(tournament.totalRounds) < 1) {
+      newErrors.totalRounds = "Total rounds must be at least 1";
+    }
+
+    if (!tournament.startDate) {
+      newErrors.startDate = "Start date is required";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  }
+
   function handleChange(event) {
     const { name, value } = event.target;
 
@@ -44,6 +73,12 @@ export default function CreateTournament() {
       ...prev,
       [name]: value,
     }));
+
+    setErrors((prev) => {
+      const updatedErrors = { ...prev };
+      delete updatedErrors[name];
+      return updatedErrors;
+    });
   }
 
   function handleBack() {
@@ -83,7 +118,7 @@ export default function CreateTournament() {
 
       const data = await response.json();
 
-      navigate(`/tournaments/${data.id}/players`);
+      navigate(`/tournaments/${data.tournament.id}/players`);
     } catch (error) {
       console.error("Create tournament error:", error);
     }
@@ -103,6 +138,8 @@ export default function CreateTournament() {
         handleChange={handleChange}
         formats={formats}
         tournametTypes={tournametTypes}
+        validate={validate}
+        errors={errors}
       />
     </PageLayout>
   );
