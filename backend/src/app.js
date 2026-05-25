@@ -35,6 +35,9 @@ app.use("/api/", playerRouter);
 //tournament enpoints
 app.use("/api/", tournamentRouter);
 
+//Protected admin routes
+app.use("/api/", authMiddleware, adminRoutes);
+
 // Root route
 app.get("/", (req, res) => {
   res.send("Backend API is running");

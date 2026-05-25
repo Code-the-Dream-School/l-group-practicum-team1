@@ -133,14 +133,13 @@ const getUsers = async (req, res) => {
 
 async function searchUsers(req, res) {
   const searchQuery = req.query.search;
-  console.log("req.query====", req.query);
   if (!searchQuery || searchQuery.trim().length < 1) {
     return res.status(400).json({
       error: "Search query must be at least 1 characters long",
     });
   }
 
-  // ????? Get limit from query (default to 20)
+  // Get limit from query (default to 20)
   const limit = parseInt(req.query.limit) || 20;
 
   // Construct search patterns outside the query for proper parameterization

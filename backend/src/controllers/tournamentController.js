@@ -59,6 +59,7 @@ async function getRounds(req, res) {
         },
         include: {
           matches: true,
+          tournament: true,
         },
         orderBy: {
           roundNumber: "asc",
