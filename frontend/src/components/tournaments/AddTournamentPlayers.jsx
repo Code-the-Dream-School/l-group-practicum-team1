@@ -48,8 +48,10 @@ export default function AddTournamentPlayers({
               selectedPlayers={selectedPlayers}
               setSelectedPlayers={setSelectedPlayers}
               onChange={setSelectedPlayers}
-              onAddPlayer={handleAddPlayer}
+              // onAddPlayer={handleAddPlayer}
               onRemovePlayer={handleRemovePlayer}
+              // experiment
+              onAddPlayer={onSubmit}
             />
           </div>
         </div>

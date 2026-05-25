@@ -61,10 +61,16 @@ export default function TournamentPlayerSelector({
     });
   }, [players, selectedPlayers, search]);
 
-  function handleSelectPlayer(player) {
-    if (maxPlayers && selectedPlayers.length >= maxPlayers) return;
+  // function handleSelectPlayer(player) {
+  //   if (maxPlayers && selectedPlayers.length >= maxPlayers) return;
 
-    onAddPlayer(player);
+  //   onAddPlayer(player);
+  //   setSearch("");
+  // }
+  function handleSelectPlayer(playerId) {
+    // if (maxPlayers && selectedPlayers.length >= maxPlayers) return;
+
+    onAddPlayer(playerId);
     setSearch("");
   }
 
@@ -85,7 +91,8 @@ export default function TournamentPlayerSelector({
               <li key={player.id}>
                 <button
                   type="button"
-                  onClick={() => handleSelectPlayer(player)}
+                  // onClick={() => handleSelectPlayer(player)}
+                  onClick={() => handleSelectPlayer(player.id)}
                   className="player-dropdown-btn"
                 >
                   {player.firstName} {player.lastName}

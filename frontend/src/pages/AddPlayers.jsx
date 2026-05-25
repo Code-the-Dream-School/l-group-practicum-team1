@@ -11,6 +11,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 export default function AddPlayers() {
   console.log("AddPlayers component rendered");
   const [selectedPlayers, setSelectedPlayers] = useState([]);
+  const [selectedPlayer, setSelectedPlayer] = useState({});
   const [tournament, setTournament] = useState(null);
 
   const { tournamentId } = useParams();
@@ -73,17 +74,24 @@ export default function AddPlayers() {
   // }
 
   // NOTE: wait for API
-  async function handleAddTournamentPlayers() {
+  async function handleAddTournamentPlayers(playerId) {
+    console.log("playerId to payload----->", playerId);
     try {
       const response = await fetch(
-        `${API_URL}/api/admin/tournaments/${tournamentId}/players`,
+        `${API_URL}/api/tournaments/${tournamentId}/players`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ tournamentId, players: selectedPlayers }),
+          // body: JSON.stringify({ tournamentId, players: selectedPlayers }),
+          body: JSON.stringify({
+            tournamentId,
+            userId: playerId,
+            status: "REGISTERED",
+            seedNumber: "1",
+          }),
         },
       );
 
@@ -97,31 +105,34 @@ export default function AddPlayers() {
     }
   }
 
+  // /tournaments/:tournamentId/players/:playerId
+
   async function handleGenerateFirstRound() {
     console.log("tournament was started...");
     navigate(`/tournaments/${tournament.id}/rounds`);
     // TODO: add generating first round
-    // try {
-    //   const response = await fetch(
-    //     `${API_URL}/api/admin/tournaments/${tournamentId}/players`,
-    //     {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //         Authorization: `Bearer ${token}`,
-    //       },
-    //       body: JSON.stringify({ tournamentId, players: selectedPlayers }),
-    //     },
-    //   );
+    try {
+      const response = await fetch(
+        `${API_URL}/api/admin/tournaments/${tournamentId}/players`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          // body: JSON.stringify({ tournamentId, players: selectedPlayers }),
+          body: JSON.stringify({ tournamentId, player: selectedPlayer }),
+        },
+      );
 
-    //   if (!response.ok) {
-    //     throw new Error("Failed to add tournament players");
-    //   }
+      if (!response.ok) {
+        throw new Error("Failed to add tournament players");
+      }
 
-    //   const data = await response.json();
-    // } catch (error) {
-    //   console.error("Add tournament players error:", error);
-    // }
+      const data = await response.json();
+    } catch (error) {
+      console.error("Add tournament players error:", error);
+    }
   }
 
   useEffect(() => {
@@ -148,25 +159,29 @@ export default function AddPlayers() {
     }
   }, [tournamentId]);
 
-  function handleAddPlayer(player) {
-    setSelectedPlayers((prev) => {
-      const exists = prev.some((p) => p.id === player.id);
-      if (exists) return prev;
-
-      return [...prev, player];
-    });
+  function handleAddPlayer(playerId) {
+    console.log("playerId----->", playerId);
+    // setSelectedPlayers((prev) => {
+    //   const exists = prev.some((p) => p.id === player.id);
+    //   if (exists) return prev;
+    //   return [...prev, player];
+    // });
+    setSelectedPlayer(playerId);
   }
 
   function handleRemovePlayer(playerId) {
-    setSelectedPlayers((prev) => prev.filter((p) => p.id !== playerId));
+    // setSelectedPlayers((prev) => prev.filter((p) => p.id !== playerId));
+    setSelectedPlayer(playerId);
   }
-
+  console.log("selectedPlayer", selectedPlayer);
   return (
     <PageLayout>
       <AddTournamentPlayers
         tournament={tournament}
         selectedPlayers={selectedPlayers}
+        selectedPlayer={selectedPlayer}
         setSelectedPlayers={setSelectedPlayers}
+        setSelectedPlayer={setSelectedPlayer}
         onSubmit={handleAddTournamentPlayers}
         handleAddPlayer={handleAddPlayer}
         handleRemovePlayer={handleRemovePlayer}
