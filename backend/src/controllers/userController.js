@@ -6,8 +6,6 @@ const userSchema = require("../../validations/userValidation.js");
 const prisma = require("../prisma.js");
 const generateToken = require("../utils/generateToken.js");
 
-
-
 //Register
 const register = async (req, res) => {
   if (!req.body) req.body = {};
@@ -50,15 +48,15 @@ const register = async (req, res) => {
         message: "Invalid email or password",
       });
     }
-    const token = generateToken(user.id, res)
+    const token = generateToken(user.id, res);
     res.status(201).json({
-      message: "User created", 
+      message: "User created",
       token: token,
       user: {
         id: user.id,
         email: user.email,
-        name: user.firstName
-      }
+        name: user.firstName,
+      },
     });
   } catch (err) {
     return res.status(500).json({ message: "Server error" });
@@ -98,9 +96,9 @@ const login = async (req, res) => {
         .status(StatusCodes.UNAUTHORIZED)
         .json({ message: "Invalid email or password" });
     }
-    const token = generateToken(user.id,res);
+    const token = generateToken(user.id, res);
 
-    res.json({ message: "You are logged in", token:token });
+    res.json({ message: "You are logged in", token: token });
   } catch (err) {
     return res.status(500).json({ message: "Server error" });
   }
@@ -108,9 +106,9 @@ const login = async (req, res) => {
 
 //Logout
 const logout = async (req, res) => {
-  res.clearCookie('jwt');
+  res.clearCookie("jwt");
 
-  res.json({ message: 'User has logged out'})
+  res.json({ message: "User has logged out" });
 };
 
 module.exports = { register, login, logout };
