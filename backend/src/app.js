@@ -26,11 +26,13 @@ app.use(limiter);
 const userRoutes = require("./routes/userRoutes");
 app.use("/api/", userRoutes);
 
-//Protected admin routes
-app.use("/api/", authMiddleware, adminRoutes);
+
 
 //tournament enpoints
 app.use("/api/", tournamentRouter);
+
+//Protected admin routes
+app.use("/api/", authMiddleware, adminRoutes);
 
 // Root route
 app.get("/", (req, res) => {

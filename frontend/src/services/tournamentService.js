@@ -1,7 +1,12 @@
 const API_URL = import.meta.env.VITE_API_URL;
+import { authHeader } from "../utils/auth";
 
 export async function getTournaments() {
-  const response = await fetch(`${API_URL}/api/tournaments`);
+  const response = await fetch(`${API_URL}/api/tournaments`, {
+    headers: {
+      ...authHeader(),
+    },
+  });
 
   let result;
 
@@ -20,7 +25,7 @@ export async function getTournaments() {
 
 export async function getRounds(tournamentId) {
   const response = await fetch(
-    `${API_URL}/api/tournaments/${tournamentId}/rounds`
+    `${API_URL}/api/tournaments/${tournamentId}/rounds`,
   );
 
   let data;
@@ -38,12 +43,17 @@ export async function getRounds(tournamentId) {
   return data;
 }
 
+//added the ...authHeader() to protect the routes for only admins
 export async function generateNextRound(tournamentId) {
   const response = await fetch(
     `${API_URL}/api/tournaments/${tournamentId}/rounds`,
     {
+      
       method: "POST",
-    }
+      headers: {
+        ...authHeader(),
+      }
+    },
   );
 
   let data;
@@ -65,7 +75,9 @@ export async function updateMatch(matchId, matchData) {
   const response = await fetch(`${API_URL}/api/matches/${matchId}`, {
     method: "PATCH",
     headers: {
+      
       "Content-Type": "application/json",
+      ...authHeader(), 
     },
     body: JSON.stringify(matchData),
   });
