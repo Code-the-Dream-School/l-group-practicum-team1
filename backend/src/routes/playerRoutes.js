@@ -5,9 +5,11 @@ const {
   readPlayer,
   updatePlayer,
   deletePlayer,
+  readAllPlayers,
 } = require("../controllers/playerController.js");
 const router = express.Router();
 router.route("/tournaments/:tournamentId/players").post(createPlayer);
+router.route("/tournaments/:tournamentId/players").get(readAllPlayers);
 router.route("/tournament-players/:idPlayer").get(readPlayer);
 router.route("/tournament-players/:idPlayer").patch(updatePlayer);
 router
