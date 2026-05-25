@@ -216,4 +216,71 @@ const deletePlayer = async (req, res) => {
   }
 };
 
-module.exports = { createPlayer, readPlayer, updatePlayer, deletePlayer };
+// Read All Players in a Tournament
+const readAllPlayers = async (req, res) => {
+  const { tournamentId } = req.params;
+
+  // Pagination setup (defaults to page 1, 10 players per page)
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  try {
+    // We use Promise.all to fetch the players and the total count simultaneously
+    const [players, totalCount] = await Promise.all([
+      prisma.tournamentPlayer.findMany({
+        where: {
+          tournamentId: tournamentId,
+        },
+        skip: skip,
+        take: limit,
+        // Order by seed number or creation date for a clean roster
+        orderBy: {
+          createdAt: "asc",
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              rating: true,
+            },
+          },
+        },
+      }),
+      prisma.tournamentPlayer.count({
+        where: {
+          tournamentId: tournamentId,
+        },
+      }),
+    ]);
+
+    const totalPages = Math.ceil(totalCount / limit);
+
+    res.status(StatusCodes.OK).json({
+      data: players,
+      pagination: {
+        totalItems: totalCount,
+        totalPages: totalPages,
+        currentPage: page,
+        itemsPerPage: limit,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching tournament roster:", error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: "Failed to retrieve the player roster. Please try again.",
+    });
+  }
+};
+
+module.exports = {
+  createPlayer,
+  readPlayer,
+  updatePlayer,
+  deletePlayer,
+  readAllPlayers,
+};
