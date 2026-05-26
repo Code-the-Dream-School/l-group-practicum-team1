@@ -6,6 +6,7 @@ const rateLimit = require("express-rate-limit");
 const tournamentRouter = require("./routes/tournamentRouters");
 const adminRoutes = require("./routes/adminRoutes");
 const authMiddleware = require("./middleware/authMiddleware.js");
+const errorHandler = require("./middleware/errorHandler")
 
 const app = express();
 
@@ -25,15 +26,17 @@ app.use(limiter);
 const userRoutes = require("./routes/userRoutes");
 app.use("/api/", userRoutes);
 
-//Protected admin routes
-app.use("/api/", authMiddleware, adminRoutes);
+
 
 //tournament enpoints
 app.use("/api/", tournamentRouter);
+
+//Protected admin routes
+app.use("/api/", authMiddleware, adminRoutes);
 
 // Root route
 app.get("/", (req, res) => {
   res.send("Backend API is running");
 });
-
+app.use(errorHandler)
 module.exports = app;

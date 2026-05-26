@@ -24,5 +24,9 @@
     "globals": "^16.5.0",
     "postcss": "^8.5.14",
     "vite": "^7.2.4"
-  }
+  },
+  "description": "This document outlines **React-specific best practices** for building maintainable, performant frontend applications. It is intended for students working on real-world full‑stack projects.",
+  "main": "eslint.config.js",
+  "author": "",
+  "license": "ISC"
 }
