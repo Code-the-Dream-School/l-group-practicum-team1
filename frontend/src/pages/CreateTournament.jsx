@@ -14,12 +14,12 @@ export default function CreateTournament() {
   const totalRoundsDefault = "1";
 
   const initialTournament = {
-    name: "Test tournament",
-    location: "NY",
-    timeControl: "12",
+    name: "",
+    location: "",
+    timeControl: "",
     format: formats[0],
     totalRounds: totalRoundsDefault,
-    category: "U14",
+    category: "",
     tournamentType: tournametTypes[0],
     startDate: "",
     endDate: "",

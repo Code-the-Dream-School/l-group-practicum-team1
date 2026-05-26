@@ -7,7 +7,6 @@ import "./MatchResults.css";
 const scoreOptions = ["0", "0.5", "1"];
 
 export default function MatchResults({ matches }) {
-  console.log("GET matches", matches);
   // Initialize matches with original values
   const [roundMatches, setRoundMatches] = useState(
     matches.map((m) => ({
@@ -97,7 +96,6 @@ export default function MatchResults({ matches }) {
       player2Score: Number(match.player2Score),
       winnerPlayerId: getWinnerPlayerId(match),
     };
-    console.log("send to backend:", payload);
 
     // TODO: await fetch match
 
@@ -128,7 +126,6 @@ export default function MatchResults({ matches }) {
             >
               <span
                 className={`color-indicator ${
-                  // match.player1Color === "BLACK" ? "BLACK" : "WHITE"
                   match.player1Color === "BLACK" ? "black" : "white"
                 }`}
               />
