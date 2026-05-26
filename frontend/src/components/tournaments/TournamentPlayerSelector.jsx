@@ -9,11 +9,12 @@ export default function TournamentPlayerSelector({
   maxPlayers,
 }) {
   const [search, setSearch] = useState("");
-  const [players, setPlayers] = useState([]);
+  const [players, setPlayers] = useState([]); // players from search
   const [isLoading, setIsLoading] = useState(false);
 
   const token = localStorage.getItem("token");
 
+  // fetch search players
   useEffect(() => {
     async function fetchPlayers() {
       if (!search.length) return;
@@ -48,6 +49,7 @@ export default function TournamentPlayerSelector({
     fetchPlayers();
   }, [search]);
 
+  // filter players from search
   const filteredPlayers = useMemo(() => {
     if (!search.trim()) return [];
 
@@ -61,16 +63,10 @@ export default function TournamentPlayerSelector({
     });
   }, [players, selectedPlayers, search]);
 
-  // function handleSelectPlayer(player) {
-  //   if (maxPlayers && selectedPlayers.length >= maxPlayers) return;
+  function handleSelectPlayer(player) {
+    if (maxPlayers && selectedPlayers.length >= maxPlayers) return;
 
-  //   onAddPlayer(player);
-  //   setSearch("");
-  // }
-  function handleSelectPlayer(playerId) {
-    // if (maxPlayers && selectedPlayers.length >= maxPlayers) return;
-
-    onAddPlayer(playerId);
+    onAddPlayer(player);
     setSearch("");
   }
 
@@ -91,8 +87,7 @@ export default function TournamentPlayerSelector({
               <li key={player.id}>
                 <button
                   type="button"
-                  // onClick={() => handleSelectPlayer(player)}
-                  onClick={() => handleSelectPlayer(player.id)}
+                  onClick={() => handleSelectPlayer(player)}
                   className="player-dropdown-btn"
                 >
                   {player.firstName} {player.lastName}
