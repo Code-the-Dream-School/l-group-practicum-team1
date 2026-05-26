@@ -126,15 +126,30 @@ const getUsers = async (req, res) => {
 };
 
 
-//Need to ask questions about creating multiple users at once. 
-//Need to ask questions about deleting one user at a time and keeping track of the user ratings. 
 // const createUsers = async (req, res) => {};
 
-// const deleteUsers = async (req, res) => {}
+const deleteUsers = async (req, res, next) => {
+  const {id} = req.params
+
+  if (!id){
+    return res.status(400).json({ message: 'Player not found'})
+  }
+  try {
+    await prisma.user.delete({
+      where: {id}
+    })
+    return res.status(StatusCodes.OK).json({ message: 'User deleted'})
+  }catch(err){
+    res.status(404).json({ message: 'User not found'})
+    next(err)
+
+  }
+}
 
 module.exports = {
   createTournament,
   getTournament,
   deleteTournament,
   getUsers,
-};
+  deleteUsers
+}
