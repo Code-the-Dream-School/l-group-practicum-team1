@@ -5,7 +5,13 @@ export function saveAuthData(data) {
 }
 
 export function isLoggedIn() {
+ 
   return Boolean(localStorage.getItem("token"));
+}
+
+export function authHeader() {
+  const token = localStorage.getItem("token");
+  return token ? {Authorization: `Bearer ${token}`} : {}
 }
 
 export function logout() {

@@ -3,7 +3,7 @@ const {
   getTournament,
   deleteTournament,
   getUsers,
-  searchUsers,
+  deleteUsers,
 } = require("../controllers/adminController.js");
 const express = require("express");
 const adminRoutes = express.Router();
@@ -15,6 +15,7 @@ adminRoutes.get("/admin/tournament/:id", getTournament);
 adminRoutes.delete("/admin/tournament/:id", deleteTournament);
 
 adminRoutes.get("/admin/users", getUsers);
-adminRoutes.get("/admin/searchUsers", searchUsers);
+
+adminRoutes.delete("/admin/users/:id", deleteUsers);
 
 module.exports = adminRoutes;
