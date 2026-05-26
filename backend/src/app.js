@@ -9,6 +9,7 @@ const adminRoutes = require("./routes/adminRoutes");
 const authMiddleware = require("./middleware/authMiddleware.js");
 const cookieParser = require("cookie-parser");
 const app = express();
+const errorHandler = require('./middleware/errorHandler')
 
 // Security & best‑practice middleware
 app.use(helmet());
