@@ -108,6 +108,45 @@ const deleteTournament = async (req, res) => {
 //getUsers firstName, lastName, and rating
 const getUsers = async (req, res) => {
   try {
+    // search users by full names
+    const searchQuery = req.query.search?.trim();
+    const limit = parseInt(req.query.limit) || 20;
+
+    if (searchQuery) {
+      const searchPattern = `%${searchQuery}%`;
+      const exactMatch = searchQuery;
+      const startsWith = `${searchQuery}%`;
+
+      const searchResults = await prisma.$queryRaw`
+        SELECT 
+          u.id,
+          u.first_name as "firstName",
+          u.last_name as "lastName",
+          u.rating
+        FROM "user" u
+        WHERE (
+          u.first_name ILIKE ${searchPattern}
+          OR u.last_name ILIKE ${searchPattern}
+        )
+        AND u.role = 'PLAYER'
+        ORDER BY 
+          CASE 
+            WHEN u.last_name ILIKE ${exactMatch} THEN 1
+            WHEN u.last_name ILIKE ${startsWith} THEN 2
+            WHEN u.last_name ILIKE ${searchPattern} THEN 3
+            ELSE 4
+          END,
+          u.created_at DESC
+        LIMIT ${limit}
+      `;
+
+      return res.status(200).json({
+        results: searchResults,
+        query: searchQuery,
+        count: searchResults.length,
+      });
+    }
+
     const allUsers = await prisma.user.findMany({
       select: {
         firstName: true,
@@ -144,57 +183,10 @@ const deleteUsers = async (req, res, next) => {
   }
 };
 
-async function searchUsers(req, res) {
-  const searchQuery = req.query.search;
-  if (!searchQuery || searchQuery.trim().length < 1) {
-    return res.status(400).json({
-      error: "Search query must be at least 1 characters long",
-    });
-  }
-
-  // Get limit from query (default to 20)
-  const limit = parseInt(req.query.limit) || 20;
-
-  // Construct search patterns outside the query for proper parameterization
-  const searchPattern = `%${searchQuery}%`;
-  const exactMatch = searchQuery;
-  const startsWith = `${searchQuery}%`;
-
-  // Use raw SQL for complex text search with parameterized queries
-  const searchResults = await prisma.$queryRaw`
-SELECT 
-      u.id,
-      u.first_name as "firstName",
-      u.last_name as "lastName",
-      u.rating
-    FROM "user" u
-    WHERE (
-      u.first_name ILIKE ${searchPattern}
-      OR u.last_name ILIKE ${searchPattern}
-    )
-    AND u.role = 'PLAYER'
-    ORDER BY 
-      CASE 
-        WHEN u.last_name ILIKE ${exactMatch} THEN 1
-        WHEN u.last_name ILIKE ${startsWith} THEN 2
-        WHEN u.last_name ILIKE ${searchPattern} THEN 3
-        ELSE 4
-      END,
-      u.created_at DESC
-    LIMIT ${limit}`;
-
-  res.status(200).json({
-    results: searchResults,
-    query: searchQuery,
-    count: searchResults.length,
-  });
-}
-
 module.exports = {
   createTournament,
   getTournament,
   deleteTournament,
   getUsers,
-  searchUsers,
   deleteUsers,
 };
