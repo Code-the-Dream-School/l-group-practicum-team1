@@ -10,7 +10,6 @@ export default function AddTournamentPlayers({
   tournament,
   selectedPlayers,
   setSelectedPlayers,
-  onSubmit,
   handleAddPlayer,
   handleRemovePlayer,
   handleGenerateFirstRound,
@@ -40,22 +39,17 @@ export default function AddTournamentPlayers({
             </Button>
           </div>{" "}
         </div>
-        {/* <h2 className="form-title">Add Tournament Players</h2> */}
         <div className="form-grid single">
           <div>
             <TournamentPlayerSelector
               maxPlayers={playersNeeded}
               selectedPlayers={selectedPlayers}
               setSelectedPlayers={setSelectedPlayers}
-              onChange={setSelectedPlayers}
-              onAddPlayer={handleAddPlayer}
               onRemovePlayer={handleRemovePlayer}
+              onAddPlayer={handleAddPlayer}
             />
           </div>
         </div>
-        <div className="form-actions end">
-          <Button onClick={onSubmit}>Add Players</Button>
-        </div>{" "}
       </section>
     </>
   );

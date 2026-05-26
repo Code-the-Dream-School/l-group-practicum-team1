@@ -9,11 +9,12 @@ export default function TournamentPlayerSelector({
   maxPlayers,
 }) {
   const [search, setSearch] = useState("");
-  const [players, setPlayers] = useState([]);
+  const [players, setPlayers] = useState([]); // players from search
   const [isLoading, setIsLoading] = useState(false);
 
   const token = localStorage.getItem("token");
 
+  // fetch search players
   useEffect(() => {
     async function fetchPlayers() {
       if (!search.length) return;
@@ -48,6 +49,7 @@ export default function TournamentPlayerSelector({
     fetchPlayers();
   }, [search]);
 
+  // filter players from search
   const filteredPlayers = useMemo(() => {
     if (!search.trim()) return [];
 
