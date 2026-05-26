@@ -45,7 +45,6 @@ export default function AddTournamentPlayers({
               maxPlayers={playersNeeded}
               selectedPlayers={selectedPlayers}
               setSelectedPlayers={setSelectedPlayers}
-              // onChange={setSelectedPlayers}
               onRemovePlayer={handleRemovePlayer}
               onAddPlayer={handleAddPlayer}
             />

@@ -77,6 +77,7 @@ export default function AddPlayers() {
     }
   }
 
+  // TODO
   // async function handleGenerateFirstRound() {
   //   console.log("tournament was started...");
   //   navigate(`/tournaments/${tournament.id}/rounds`);
@@ -104,9 +105,27 @@ export default function AddPlayers() {
   //   }
   // }
 
-  function handleRemovePlayer(playerId) {
-    // setSelectedPlayers((prev) => prev.filter((p) => p.id !== playerId));
-    // setSelectedPlayer(playerId);
+  async function handleRemoveTournamentPlayer(playerId) {
+    try {
+      const response = await fetch(
+        `${API_URL}/api/tournaments/${tournamentId}/players/${playerId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to delete tournament player");
+      }
+
+      setSelectedPlayers((prev) => prev.filter((p) => p.id !== playerId));
+      const data = await response.json();
+    } catch (error) {
+      console.error("Delete tournament player error:", error);
+    }
   }
 
   return (
@@ -116,7 +135,7 @@ export default function AddPlayers() {
         selectedPlayers={selectedPlayers}
         setSelectedPlayers={setSelectedPlayers}
         handleAddPlayer={handleAddTournamentPlayer}
-        handleRemovePlayer={handleRemovePlayer}
+        handleRemovePlayer={handleRemoveTournamentPlayer}
         // handleGenerateFirstRound={handleGenerateFirstRound}
       />
     </PageLayout>

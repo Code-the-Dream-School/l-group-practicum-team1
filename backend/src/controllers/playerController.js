@@ -7,13 +7,16 @@ const {
 //Player
 //Create Player
 const createPlayer = async (req, res) => {
-  console.log("req.body", req.body);
   if (!req.body) req.body = {};
 
   const validationPayload = {
     ...req.body,
     tournamentId: req.params.tournamentId,
-    // userId: req.user.id, it comes in body
+    // userId: req.user.id
+    // Commented out because:
+    // - userId from req.body is the player being added
+    // - userId: req.user.id is the logged-in admin - so it rewrites userId from req.body
+    // If both are needed, we need to rename them
   };
 
   // 2. Pass the merged payload to your validator
@@ -30,19 +33,12 @@ const createPlayer = async (req, res) => {
 
   try {
     const { tournamentId, userId, status, seedNumber } = value;
-    console.log("userId=======", userId);
-    console.log("tournamentId", tournamentId);
-    console.log("status", status);
-    console.log("seedNumber", seedNumber);
 
     const existingRegistration = await prisma.tournamentPlayer.findFirst({
       where: { tournamentId, userId },
     });
 
-    console.log("existingRegistration===", existingRegistration);
-
     if (existingRegistration) {
-      console.log("inside existingRegistration");
       return res.status(StatusCodes.BAD_REQUEST).json({
         message: "You are already registered for this tournament.",
       });
@@ -196,7 +192,7 @@ const deletePlayer = async (req, res) => {
     const registration = await prisma.tournamentPlayer.findFirst({
       where: {
         tournamentId,
-        id: playerId,
+        userId: playerId,
       },
     });
 
