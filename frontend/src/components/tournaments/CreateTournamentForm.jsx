@@ -4,7 +4,7 @@ import Input from "../ui/Input";
 import FormField from "../ui/FormField";
 import TournamentPlayerSelector from "./TournamentPlayerSelector";
 import Select from "../ui/Select";
-import "./CreateTournamentForm.css";
+import "./Form.css";
 
 export default function CreateTournamentForm({
   tournament,
@@ -18,162 +18,137 @@ export default function CreateTournamentForm({
   handleChange,
   formats,
   tournametTypes,
+  validate,
+  errors,
 }) {
-  const [step, setStep] = useState(1);
-
-  function handleBack() {
-    setStep(1);
-  }
-
-  function handleNext() {
-    setStep(2);
+  async function handleSubmit() {
+    if (!validate()) return;
+    await handleCreateTournament();
   }
 
   return (
     <>
-      {step === 1 && (
-        <section className="form-section">
-          <h2 className="form-title">Create Tournament: Tournament Details</h2>
-          <p className="form-step">Step 1 of 2</p>
+      <section className="form-section">
+        <h2 className="form-title">Create Tournament</h2>
 
-          <div className="form-grid">
-            <div className="form-column">
-              <FormField label="Name*">
-                <Input
-                  name="name"
-                  value={tournament.name}
-                  onChange={handleChange}
-                  required
-                />
-              </FormField>
-
-              <FormField label="Location">
-                <Input
-                  name="location"
-                  value={tournament.location}
-                  onChange={handleChange}
-                />
-              </FormField>
-
-              <FormField label="Time Control*">
-                <Input
-                  name="timeControl"
-                  value={tournament.timeControl}
-                  onChange={handleChange}
-                />
-              </FormField>
-
-              <FormField label="Format*">
-                <Select
-                  options={formats.map((format) => ({
-                    label: format,
-                    value: format,
-                  }))}
-                  name="format"
-                  value={tournament.format}
-                  onChange={handleChange}
-                />
-              </FormField>
-
-              <FormField label="Total Rounds*">
-                <Input
-                  name="totalRounds"
-                  type="number"
-                  min="1"
-                  value={tournament.totalRounds}
-                  onChange={handleChange}
-                  required
-                />
-              </FormField>
-
-              <FormField label="Category">
-                <Input
-                  name="category"
-                  value={tournament.category}
-                  onChange={handleChange}
-                />
-              </FormField>
-
-              <FormField label="Type">
-                <Select
-                  options={tournametTypes.map((type) => ({
-                    label: type,
-                    value: type,
-                  }))}
-                  name="tournamentType"
-                  value={tournament.type}
-                  onChange={handleChange}
-                />
-              </FormField>
-            </div>
-
-            <div className="form-column">
-              <FormField label="Start Date*">
-                <Input
-                  name="startDate"
-                  type="date"
-                  value={tournament.startDate}
-                  onChange={handleChange}
-                />
-              </FormField>
-
-              <FormField label="Finish Date">
-                <Input
-                  name="endDate"
-                  type="date"
-                  value={tournament.endDate}
-                  onChange={handleChange}
-                />
-              </FormField>
-            </div>
-          </div>
-
-          <div className="form-actions end">
-            <Button
-              onClick={handleNext}
-              disabled={!tournament.name || !tournament.totalRounds}
-            >
-              Next: Add Players
-            </Button>{" "}
-          </div>
-        </section>
-      )}
-
-      {step === 2 && (
-        <section className="form-section">
-          <h2 className="form-title">Create Tournament: Add Players</h2>
-          <p className="form-step">Step 2 of 2</p>
-          <div className="form-summary">
-            <p>Tournament: {tournament.name || "[Tournament Name]"}</p>
-            <p>Rounds: {tournament.totalRounds || 1}</p>
-            <p>Players needed: {playersNeeded || 2}</p>
-          </div>
-          <div className="form-grid single">
-            <div>
-              <TournamentPlayerSelector
-                maxPlayers={playersNeeded}
-                selectedPlayers={selectedPlayers}
-                setSelectedPlayers={setSelectedPlayers}
-                onChange={setSelectedPlayers}
-                onAddPlayer={handleAddPlayer}
-                onRemovePlayer={handleRemovePlayer}
+        <div className="form-grid">
+          <div className="form-column">
+            <FormField label="Name" htmlFor="name" error={errors.name}>
+              <Input
+                name="name"
+                id="name"
+                value={tournament.name}
+                onChange={handleChange}
+                required
               />
-            </div>
-          </div>
-          <div className="form-actions space-between">
-            <Button variant="secondary" onClick={handleBack}>
-              Back
-            </Button>
+            </FormField>
 
-            <Button
-              onClick={handleCreateTournament}
-              disabled={selectedPlayers.length !== playersNeeded}
+            <FormField label="Location" htmlFor="location">
+              <Input
+                name="location"
+                id="location"
+                value={tournament.location}
+                onChange={handleChange}
+              />
+            </FormField>
+
+            <FormField
+              label="Time Control"
+              htmlFor="timeControl"
+              error={errors.timeControl}
             >
-              Create Tournament
-            </Button>
-          </div>{" "}
-        </section>
-      )}
+              <Input
+                name="timeControl"
+                id="timeControl"
+                value={tournament.timeControl}
+                onChange={handleChange}
+              />
+            </FormField>
+
+            <FormField label="Format" htmlFor="format" error={errors.format}>
+              <Select
+                options={formats.map((format) => ({
+                  label: format,
+                  value: format,
+                }))}
+                name="format"
+                id="format"
+                value={tournament.format}
+                onChange={handleChange}
+              />
+            </FormField>
+
+            <FormField
+              label="Total Rounds"
+              htmlFor="totalRounds"
+              error={errors.totalRounds}
+            >
+              <Input
+                name="totalRounds"
+                id="totalRounds"
+                type="number"
+                min="1"
+                value={tournament.totalRounds}
+                onChange={handleChange}
+                required
+              />
+            </FormField>
+
+            <FormField label="Category" htmlFor="category">
+              <Input
+                name="category"
+                id="category"
+                value={tournament.category}
+                onChange={handleChange}
+              />
+            </FormField>
+
+            <FormField label="Type" htmlFor="tournamentType">
+              <Select
+                options={tournametTypes.map((type) => ({
+                  label: type,
+                  value: type,
+                }))}
+                name="tournamentType"
+                id="tournamentType"
+                value={tournament.type}
+                onChange={handleChange}
+              />
+            </FormField>
+          </div>
+
+          <div className="form-column">
+            <FormField
+              label="Start Date"
+              htmlFor="startDate"
+              error={errors.startDate}
+            >
+              <Input
+                name="startDate"
+                id="startDate"
+                type="date"
+                value={tournament.startDate}
+                onChange={handleChange}
+                required
+              />
+            </FormField>
+
+            <FormField label="Finish Date" htmlFor="endDate">
+              <Input
+                name="endDate"
+                id="endDate"
+                type="date"
+                value={tournament.endDate}
+                onChange={handleChange}
+              />
+            </FormField>
+          </div>
+        </div>
+
+        <div className="form-actions end">
+          <Button onClick={handleSubmit}>Create</Button>{" "}
+        </div>
+      </section>
     </>
   );
 }

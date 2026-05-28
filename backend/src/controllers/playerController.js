@@ -12,7 +12,11 @@ const createPlayer = async (req, res) => {
   const validationPayload = {
     ...req.body,
     tournamentId: req.params.tournamentId,
-    userId: req.user.id,
+    // userId: req.user.id
+    // Commented out because:
+    // - userId from req.body is the player being added
+    // - userId: req.user.id is the logged-in admin - so it rewrites userId from req.body
+    // If both are needed, we need to rename them
   };
 
   // 2. Pass the merged payload to your validator
@@ -188,7 +192,7 @@ const deletePlayer = async (req, res) => {
     const registration = await prisma.tournamentPlayer.findFirst({
       where: {
         tournamentId,
-        id: playerId,
+        userId: playerId,
       },
     });
 

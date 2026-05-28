@@ -1,14 +1,16 @@
 import { useMemo, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
 import FormField from "../components/ui/FormField";
 import PageLayout from "../components/layout/PageLayout";
 import TournamentPlayerSelector from "../components/tournaments/TournamentPlayerSelector";
 import CreateTournamentForm from "../components/tournaments/CreateTournamentForm";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function CreateTournament() {
-  const formats = ["online", "offline"];
-  const tournametTypes = ["single"];
+  const formats = ["ONLINE", "OFFLINE"];
+  const tournametTypes = ["SINGLE"];
   const totalRoundsDefault = "1";
 
   const initialTournament = {
@@ -25,12 +27,44 @@ export default function CreateTournament() {
 
   const [tournament, setTournament] = useState(initialTournament);
   const [selectedPlayers, setSelectedPlayers] = useState([]);
+  const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
+
+  const token = localStorage.getItem("token");
 
   const playersNeeded = useMemo(() => {
     const rounds = Number(tournament.totalRounds);
     if (!rounds) return 0;
     return 2 ** rounds;
   }, [tournament.totalRounds]);
+
+  function validate() {
+    const newErrors = {};
+
+    if (!tournament.name.trim()) {
+      newErrors.name = "Name is required";
+    }
+
+    if (!tournament.timeControl.trim()) {
+      newErrors.timeControl = "Time control is required";
+    }
+
+    if (!tournament.format) {
+      newErrors.format = "Format is required";
+    }
+
+    if (!tournament.totalRounds || Number(tournament.totalRounds) < 1) {
+      newErrors.totalRounds = "Total rounds must be at least 1";
+    }
+
+    if (!tournament.startDate) {
+      newErrors.startDate = "Start date is required";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  }
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -39,6 +73,12 @@ export default function CreateTournament() {
       ...prev,
       [name]: value,
     }));
+
+    setErrors((prev) => {
+      const updatedErrors = { ...prev };
+      delete updatedErrors[name];
+      return updatedErrors;
+    });
   }
 
   function handleBack() {
@@ -62,14 +102,26 @@ export default function CreateTournament() {
   }
 
   async function handleCreateTournament() {
-    const payload = {
-      tournament,
-      players: selectedPlayers.map((player) => player.id),
-    };
+    try {
+      const response = await fetch(`${API_URL}/api/admin/createTournament`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(tournament),
+      });
 
-    console.log("Create tournament payload:", payload);
+      if (!response.ok) {
+        throw new Error("Failed to create tournament");
+      }
 
-    // TODO: Make API call to create tournament
+      const data = await response.json();
+
+      navigate(`/tournaments/${data.tournament.id}/players`);
+    } catch (error) {
+      console.error("Create tournament error:", error);
+    }
   }
 
   return (
@@ -86,6 +138,8 @@ export default function CreateTournament() {
         handleChange={handleChange}
         formats={formats}
         tournametTypes={tournametTypes}
+        validate={validate}
+        errors={errors}
       />
     </PageLayout>
   );

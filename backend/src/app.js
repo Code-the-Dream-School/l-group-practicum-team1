@@ -7,6 +7,7 @@ const tournamentRouter = require("./routes/tournamentRouters");
 const playerRouter = require("./routes/playerRoutes.js");
 const adminRoutes = require("./routes/adminRoutes");
 const authMiddleware = require("./middleware/authMiddleware.js");
+const errorHandler = require("./middleware/errorHandler.js");
 const cookieParser = require("cookie-parser");
 const errorHandler = require("./middleware/errorHandler.js");
 const app = express();

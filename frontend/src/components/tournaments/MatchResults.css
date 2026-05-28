@@ -1,0 +1,67 @@
+.match-results {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.match-row {
+  display: grid;
+  grid-template-columns: 1fr 140px 1fr 100px;
+  align-items: center;
+  gap: 24px;
+}
+
+.player-name {
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.score-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 700;
+}
+
+.score-controls select {
+  width: 55px;
+  padding: 6px;
+  font-size: 16px;
+}
+
+.match-row button {
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.match-row button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.player-name.winner {
+  font-weight: 700;
+  background-color: #e6f4ea;
+  border-radius: 8px;
+  padding: 6px 10px;
+}
+
+/* square icon */
+.color-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  border: 1px solid #333;
+}
+
+/* colors */
+.color-indicator.black {
+  background-color: black;
+}
+
+.color-indicator.white {
+  background-color: white;
+}

@@ -57,7 +57,8 @@ async function getRounds(req, res) {
         where: {
           tournamentId: tournamentId,
         },
-        include: {
+                include: {
+          tournament: true,
           matches: {
             include: {
               player1: {
