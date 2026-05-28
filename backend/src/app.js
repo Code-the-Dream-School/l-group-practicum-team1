@@ -8,6 +8,7 @@ const playerRouter = require("./routes/playerRoutes.js");
 const adminRoutes = require("./routes/adminRoutes");
 const authMiddleware = require("./middleware/authMiddleware.js");
 const cookieParser = require("cookie-parser");
+const errorHandler = require("./middleware/errorHandler.js");
 const app = express();
 
 // Security & best‑practice middleware
@@ -27,8 +28,6 @@ app.use(limiter);
 const userRoutes = require("./routes/userRoutes");
 app.use("/api/", userRoutes);
 
-
-
 //player endpoints
 app.use("/api/", playerRouter);
 //tournament enpoints
@@ -41,5 +40,5 @@ app.use("/api/", authMiddleware, adminRoutes);
 app.get("/", (req, res) => {
   res.send("Backend API is running");
 });
-app.use(errorHandler)
+app.use(errorHandler);
 module.exports = app;
