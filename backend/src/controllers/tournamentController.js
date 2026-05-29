@@ -207,7 +207,6 @@ async function generateNextRound(req, res) {
       return res.status(404).json({ error: "Tournament not found." });
 
     let playersToPair = [];
-    // let nextRoundNumber = tournament.rounds.length + 1;
     // 1. Determine if last round finished and who advances
     const lastRound = tournament.rounds[0];
     const nextRoundNumber = lastRound ? lastRound.roundNumber + 1 : 1;
