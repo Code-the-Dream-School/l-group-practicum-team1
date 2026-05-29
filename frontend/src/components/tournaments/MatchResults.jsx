@@ -11,6 +11,7 @@ export default function MatchResults({
   matches,
   onMatchSaved,
   isTournamentCompleted,
+  disableScoreSelects,
 }) {
   const token = localStorage.getItem("token");
 
@@ -154,7 +155,7 @@ export default function MatchResults({
             <div className="score-controls">
               <select
                 value={match.player1Score ?? "0"}
-                disabled={isTournamentCompleted}
+                disabled={disableScoreSelects}
                 onChange={(e) =>
                   handleScoreChange(match.id, "player1Score", e.target.value)
                 }
@@ -170,7 +171,7 @@ export default function MatchResults({
 
               <select
                 value={match.player2Score ?? "0"}
-                disabled={isTournamentCompleted}
+                disabled={disableScoreSelects}
                 onChange={(e) =>
                   handleScoreChange(match.id, "player2Score", e.target.value)
                 }

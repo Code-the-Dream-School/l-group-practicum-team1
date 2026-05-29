@@ -105,6 +105,10 @@ export default function RoundResults() {
   const showGenerateNextRoundButton =
     !isTournamentCompleted && isLatestCreatedRound && isActiveRoundCompleted;
 
+  // completed round matches should not be able to edit
+  const shouldDisableScoreSelects =
+    isTournamentCompleted || !isLatestCreatedRound;
+
   return (
     <PageLayout>
       <div>
@@ -131,6 +135,7 @@ export default function RoundResults() {
             <MatchResults
               matches={activeRoundMatches}
               isTournamentCompleted={isTournamentCompleted}
+              disableScoreSelects={shouldDisableScoreSelects}
               onMatchSaved={getRounds}
             />
             {!isTournamentCompleted &&
