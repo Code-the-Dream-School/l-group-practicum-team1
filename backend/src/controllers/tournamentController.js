@@ -58,7 +58,12 @@ async function getRounds(req, res) {
           tournamentId: tournamentId,
         },
         include: {
-          tournament: true,
+          tournament: {
+            select: {
+              name: true,
+              totalRounds: true,
+            },
+          },
           matches: {
             include: {
               player1: {
@@ -202,9 +207,11 @@ async function generateNextRound(req, res) {
       return res.status(404).json({ error: "Tournament not found." });
 
     let playersToPair = [];
-    let nextRoundNumber = tournament.rounds.length + 1;
+    // let nextRoundNumber = tournament.rounds.length + 1;
     // 1. Determine if last round finished and who advances
     const lastRound = tournament.rounds[0];
+    const nextRoundNumber = lastRound ? lastRound.roundNumber + 1 : 1;
+
     if (lastRound) {
       const notFinished = lastRound.matches.filter(
         (m) => m.winnerPlayerId == null,
@@ -232,7 +239,21 @@ async function generateNextRound(req, res) {
     // 2. Shuffle to randomize pairings
     playersToPair.sort(() => Math.random() - 0.5);
 
+    // safety check
     const result = await prisma.$transaction(async (tx) => {
+      const existingRound = await prisma.round.findFirst({
+        where: {
+          tournamentId,
+          roundNumber: nextRoundNumber,
+        },
+      });
+
+      if (existingRound) {
+        return res.status(400).json({
+          error: `Round ${nextRoundNumber} already exists.`,
+        });
+      }
+
       const newRound = await tx.round.create({
         data: {
           tournamentId,
