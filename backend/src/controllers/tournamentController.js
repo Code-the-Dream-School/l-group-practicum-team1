@@ -57,8 +57,34 @@ async function getRounds(req, res) {
         where: {
           tournamentId: tournamentId,
         },
-        include: {
-          matches: true,
+                include: {
+          tournament: true,
+          matches: {
+            include: {
+              player1: {
+                include: {
+                  user: {
+                    select: {
+                      firstName: true,
+                      lastName: true,
+                      rating: true,
+                    },
+                  },
+                },
+              },
+              player2: {
+                include: {
+                  user: {
+                    select: {
+                      firstName: true,
+                      lastName: true,
+                      rating: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
         orderBy: {
           roundNumber: "asc",
@@ -90,6 +116,65 @@ async function getRounds(req, res) {
   }
 }
 
+async function getRound(req, res) {
+  try {
+    const { roundId } = req.params;
+
+    if (!roundId) {
+      return res
+        .status(400)
+        .json({ error: "roundId is required in the request" });
+    }
+
+    // Fetch the single round and its matches
+    const roundDetails = await prisma.round.findUnique({
+      where: { id: roundId },
+      include: {
+        matches: {
+          include: {
+            player1: {
+              include: {
+                user: {
+                  select: {
+                    firstName: true,
+                    lastName: true,
+                    rating: true,
+                  },
+                },
+              },
+            },
+            player2: {
+              include: {
+                user: {
+                  select: {
+                    firstName: true,
+                    lastName: true,
+                    rating: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    // Handle the case where the round isn't found
+    if (!roundDetails) {
+      return res.status(404).json({ error: "Round not found." });
+    }
+
+    // Send back the single object (no pagination needed!)
+    res.status(200).json({
+      data: roundDetails,
+    });
+  } catch (error) {
+    console.error("Error encountered while fetching the round", error);
+    res.status(500).json({
+      error: "Failed to retrieve the tournament round.",
+    });
+  }
+}
 async function generateNextRound(req, res) {
   const { tournamentId } = req.params;
 
@@ -333,6 +418,7 @@ async function deleteMatch(req, res) {
 module.exports = {
   getTournaments,
   getRounds,
+  getRound,
   generateNextRound,
   updateMatch,
   deleteMatch,

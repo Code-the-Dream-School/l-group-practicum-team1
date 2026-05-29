@@ -64,6 +64,15 @@
   gap: 1.5rem;
 }
 
+.header-button {
+  margin-bottom: 20px;
+}
+
+.header-button-link {
+  text-decoration: none;
+  color: black;
+}
+
 @media (max-width: 900px) {
   .tournament-grid {
     grid-template-columns: repeat(2, minmax(250px, 1fr));

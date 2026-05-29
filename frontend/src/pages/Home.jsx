@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import Header from "../components/layout/Header";
 import LoginModal from "../components/auth/LoginModal";
@@ -6,6 +7,7 @@ import RegisterModal from "../components/auth/RegisterModal";
 import TournamentCard from "../components/tournaments/TournamentCard";
 import { getTournaments } from "../services/tournamentService";
 import { isLoggedIn, logout } from "../utils/auth";
+import Button from "../components/ui/Button";
 
 import "./Home.css";
 
@@ -70,15 +72,15 @@ function Home() {
   }
 
   const liveTournaments = tournaments.filter(
-    (tournament) => getTournamentStatus(tournament) === "live"
+    (tournament) => getTournamentStatus(tournament) === "live",
   );
 
   const upcomingTournaments = tournaments.filter(
-    (tournament) => getTournamentStatus(tournament) === "upcoming"
+    (tournament) => getTournamentStatus(tournament) === "upcoming",
   );
 
   const completedTournaments = tournaments.filter(
-    (tournament) => getTournamentStatus(tournament) === "completed"
+    (tournament) => getTournamentStatus(tournament) === "completed",
   );
 
   let tournamentsToShow = liveTournaments;
@@ -98,6 +100,12 @@ function Home() {
         onLoginClick={openLogin}
         onLogout={handleLogout}
       />
+
+      <Button className="header-button">
+        <Link to="/tournaments/create" className="header-button-link">
+          Create Tournament
+        </Link>
+      </Button>
 
       <nav className="tournament-tabs">
         <button
