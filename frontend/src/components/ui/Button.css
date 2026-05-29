@@ -38,3 +38,8 @@
 .btn-danger:hover {
   background-color: #b91c1c;
 }
+
+.btn-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

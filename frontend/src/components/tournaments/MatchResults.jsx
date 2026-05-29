@@ -3,10 +3,17 @@ import Button from "../ui/Button";
 import Input from "../ui/Input";
 import Select from "../ui/Select";
 import "./MatchResults.css";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const scoreOptions = ["0", "0.5", "1"];
 
-export default function MatchResults({ matches }) {
+export default function MatchResults({
+  matches,
+  onMatchSaved,
+  isTournamentCompleted,
+}) {
+  const token = localStorage.getItem("token");
+
   // Initialize matches with original values
   const [roundMatches, setRoundMatches] = useState(
     matches.map((m) => ({
@@ -97,7 +104,21 @@ export default function MatchResults({ matches }) {
       winnerPlayerId: getWinnerPlayerId(match),
     };
 
-    // TODO: await fetch match
+    const response = await fetch(`${API_URL}/api/matches/${match.id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      console.log("Failed to save match");
+      return;
+    }
+
+    await onMatchSaved();
 
     // reset after save
     setRoundMatches((prev) =>
@@ -124,17 +145,16 @@ export default function MatchResults({ matches }) {
                 getWinnerPlayerId(match) === match.player1Id ? "winner" : ""
               }`}
             >
-              <span
-                className={`color-indicator ${
-                  match.player1Color === "BLACK" ? "black" : "white"
-                }`}
-              />
-              {match.player1Id}
+              <span className={`chess-icon`}>
+                {match.player1Color === "BLACK" ? "\u265F" : "\u2659"}
+              </span>
+              {match.player1.user.firstName} {match.player1.user.lastName}
             </div>
 
             <div className="score-controls">
               <select
                 value={match.player1Score ?? "0"}
+                disabled={isTournamentCompleted}
                 onChange={(e) =>
                   handleScoreChange(match.id, "player1Score", e.target.value)
                 }
@@ -150,6 +170,7 @@ export default function MatchResults({ matches }) {
 
               <select
                 value={match.player2Score ?? "0"}
+                disabled={isTournamentCompleted}
                 onChange={(e) =>
                   handleScoreChange(match.id, "player2Score", e.target.value)
                 }
@@ -167,16 +188,14 @@ export default function MatchResults({ matches }) {
                 getWinnerPlayerId(match) === match.player2Id ? "winner" : ""
               }`}
             >
-              <span
-                className={`color-indicator ${
-                  match.player2Color === "BLACK" ? "black" : "white"
-                }`}
-              />
-              {match.player2Id}
+              <span className={`chess-icon`}>
+                {match.player2Color === "BLACK" ? "\u265F" : "\u2659"}
+              </span>
+              {match.player2.user.firstName} {match.player2.user.lastName}
             </div>
 
             <Button
-              disabled={!isMatchChanged(match)}
+              disabled={isTournamentCompleted || !isMatchChanged(match)}
               onClick={() => handleSaveMatch(match)}
             >
               Save

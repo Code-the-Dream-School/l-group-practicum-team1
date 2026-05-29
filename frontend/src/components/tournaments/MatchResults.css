@@ -49,19 +49,21 @@
   padding: 6px 10px;
 }
 
-/* square icon */
-.color-indicator {
-  width: 12px;
-  height: 12px;
-  border-radius: 2px;
-  border: 1px solid #333;
+select:disabled {
+  background-color: #f0f0f0;
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
-/* colors */
-.color-indicator.black {
-  background-color: black;
+.chess-icon {
+  font-size: 18px;
+  margin-right: 6px;
 }
 
-.color-indicator.white {
-  background-color: white;
+.chess-icon.white {
+  color: #555;
+}
+
+.chess-icon.black {
+  color: black;
 }
