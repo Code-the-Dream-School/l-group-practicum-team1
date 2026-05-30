@@ -51,11 +51,12 @@ const register = async (req, res) => {
     const token = generateToken(user.id, res);
     res.status(201).json({
       message: "User created",
-      token: token,
+      token,
       user: {
         id: user.id,
+        firstName: user.firstName,
         email: user.email,
-        name: user.firstName,
+        role: user.role,
       },
     });
   } catch (err) {
@@ -98,7 +99,16 @@ const login = async (req, res) => {
     }
     const token = generateToken(user.id, res);
 
-    res.json({ message: "You are logged in", token: token });
+    res.json({
+      message: "You are logged in",
+      token,
+      user: {
+        id: user.id,
+        firstName: user.firstName,
+        email: user.email,
+        role: user.role,
+      },
+    });
   } catch (err) {
     return res.status(500).json({ message: "Server error" });
   }
