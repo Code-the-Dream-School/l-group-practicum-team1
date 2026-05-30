@@ -10,7 +10,7 @@ const authMiddleware = require("./middleware/authMiddleware.js");
 const errorHandler = require("./middleware/errorHandler.js");
 const cookieParser = require("cookie-parser");
 const app = express();
-const errorHandler = require('./middleware/errorHandler')
+
 
 // Security & best‑practice middleware
 app.use(helmet());
@@ -39,7 +39,7 @@ app.use("/api/", authMiddleware, adminRoutes);
 
 //if there is not a route it will return Not Found
 app.use("*", (req, res) => {
-  res.status(404).json({ message: "Not Found" });
+  res.status(404).json({ message: "Page Not Found" });
 });
 
 // Root route

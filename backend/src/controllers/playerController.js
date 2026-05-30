@@ -44,6 +44,7 @@ const createPlayer = async (req, res) => {
       });
     }
 
+    //New player registration
     const newPlayerRegistration = await prisma.tournamentPlayer.create({
       data: {
         tournamentId,
