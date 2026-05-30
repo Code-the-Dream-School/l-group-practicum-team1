@@ -4,7 +4,10 @@ import { Link } from "react-router-dom";
 import PageLayout from "../components/layout/PageLayout";
 import { getTournamentStatus } from "../utils/tournament";
 import TournamentCard from "../components/tournaments/TournamentCard";
-import { getTournaments } from "../services/tournamentService";
+import {
+  getTournaments,
+  deleteTournament,
+} from "../services/tournamentService";
 import Button from "../components/ui/Button";
 
 import "./Home.css";
@@ -51,6 +54,26 @@ function Home() {
 
   if (activeTab === "completed") {
     tournamentsToShow = completedTournaments;
+  }
+
+  async function handleDeleteTournament(tournamentId) {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this tournament?"
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      await deleteTournament(tournamentId);
+
+      setTournaments((currentTournaments) =>
+        currentTournaments.filter(
+          (tournament) => tournament.id !== tournamentId
+        )
+      );
+    } catch (err) {
+      setError(err.message || "Could not delete tournament");
+    }
   }
 
   return (
@@ -109,6 +132,7 @@ function Home() {
                       <TournamentCard
                         key={tournament.id}
                         tournament={tournament}
+                        onDelete={handleDeleteTournament}
                       />
                     ))
                   ) : (
