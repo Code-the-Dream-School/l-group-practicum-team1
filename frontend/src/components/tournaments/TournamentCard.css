@@ -1,29 +1,136 @@
-.tournament-card {
+.tournament-card-wrapper {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  background: white;
-  color: #111827;
-  padding: 1.25rem;
+}
+
+.tournament-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  background: var(--panel-bg);
+  color: var(--text-primary);
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
   border-radius: 16px;
   text-decoration: none;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-  transition: 0.2s ease;
+  transition: all 0.25s ease;
+  font-family: "Rajdhani", sans-serif;
 }
 
 .tournament-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 12px rgba(0, 243, 255, 0.15), 0 0 24px rgba(0, 243, 255, 0.08);
 }
 
 .tournament-card h3 {
-  font-size: 1.15rem;
+  margin: 0;
+  font-family: "Orbitron", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-primary);
+  transition: all 0.25s ease;
+}
+[data-theme="dark"] .tournament-card:hover h3 {
+  color: var(--accent-color);
+  text-shadow: 0 0 4px rgba(0, 243, 255, 0.8), 0 0 8px rgba(0, 243, 255, 0.6),
+    0 0 16px rgba(0, 243, 255, 0.3);
+}
+
+[data-theme="light"] .tournament-card:hover h3 {
+  color: var(--accent-color);
+}
+
+.tournament-card-top {
+  display: flex;
+}
+
+.tournament-type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  background: var(--border-color);
+  color: var(--text-tertiary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tournament-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.tournament-info-list p {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  font-weight: 500;
 }
 
 .tournament-stats {
   display: flex;
   justify-content: space-between;
-  margin-top: auto;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-color);
+  color: var(--text-tertiary);
   font-size: 0.95rem;
   font-weight: 600;
+}
+
+.tournament-stats span {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.edit-button,
+.delete-button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.edit-button {
+  background: var(--panel-bg);
+  color: var(--accent-color);
+}
+
+.edit-button:hover {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 8px rgba(0, 243, 255, 0.15), 0 0 16px rgba(0, 243, 255, 0.08);
+}
+
+.delete-button {
+  background: var(--panel-bg);
+  color: #ef4444;
+}
+
+.delete-button:hover {
+  border-color: #ef4444;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.15), 0 0 16px rgba(239, 68, 68, 0.08);
 }

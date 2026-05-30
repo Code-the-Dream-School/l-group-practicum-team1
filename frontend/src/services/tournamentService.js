@@ -25,7 +25,7 @@ export async function getTournaments() {
 
 export async function getRounds(tournamentId) {
   const response = await fetch(
-    `${API_URL}/api/tournaments/${tournamentId}/rounds`,
+    `${API_URL}/api/tournaments/${tournamentId}/rounds`
   );
 
   let data;
@@ -48,12 +48,11 @@ export async function generateNextRound(tournamentId) {
   const response = await fetch(
     `${API_URL}/api/tournaments/${tournamentId}/rounds`,
     {
-      
       method: "POST",
       headers: {
         ...authHeader(),
-      }
-    },
+      },
+    }
   );
 
   let data;
@@ -75,9 +74,8 @@ export async function updateMatch(matchId, matchData) {
   const response = await fetch(`${API_URL}/api/matches/${matchId}`, {
     method: "PATCH",
     headers: {
-      
       "Content-Type": "application/json",
-      ...authHeader(), 
+      ...authHeader(),
     },
     body: JSON.stringify(matchData),
   });
@@ -92,6 +90,34 @@ export async function updateMatch(matchId, matchData) {
 
   if (!response.ok) {
     throw new Error(data.message || "Could not update match");
+  }
+
+  return data;
+}
+
+export async function deleteTournament(tournamentId) {
+  const response = await fetch(
+    `${API_URL}/api/admin/tournament/${tournamentId}`,
+    {
+      method: "DELETE",
+      headers: {
+        ...authHeader(),
+      },
+    }
+  );
+
+  let data;
+
+  try {
+    data = await response.json();
+  } catch {
+    data = {};
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || data.error || "Could not delete tournament"
+    );
   }
 
   return data;
