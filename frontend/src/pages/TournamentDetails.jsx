@@ -1,17 +1,23 @@
-import Header from "../components/layout/Header";
 import { useParams } from "react-router-dom";
+
+import PageLayout from "../components/layout/PageLayout";
+import TournamentHeader from "../components/tournaments/TournamentHeader";
+import TournamentRegistrationButton from "../components/tournaments/TournamentRegistrationButton";
+import TournamentPlayerList from "../components/tournaments/TournamentPlayerList";
 
 function TournamentDetails() {
   const { tournamentId } = useParams();
 
   return (
-    <main>
-      <Header loggedIn={false} />
+    <PageLayout>
+      <section>
+        <TournamentHeader tournamentId={tournamentId} />
 
-      <h1>Tournament Details</h1>
+        <TournamentRegistrationButton tournamentId={tournamentId} />
 
-      <p>{tournamentId}</p>
-    </main>
+        <TournamentPlayerList tournamentId={tournamentId} />
+      </section>
+    </PageLayout>
   );
 }
 
