@@ -1,20 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-import Header from "../components/layout/Header";
-import LoginModal from "../components/auth/LoginModal";
-import RegisterModal from "../components/auth/RegisterModal";
+import PageLayout from "../components/layout/PageLayout";
+import { getTournamentStatus } from "../utils/tournament";
 import TournamentCard from "../components/tournaments/TournamentCard";
-import { getTournaments } from "../services/tournamentService";
-import { isLoggedIn, logout } from "../utils/auth";
+import {
+  getTournaments,
+  deleteTournament,
+} from "../services/tournamentService";
 import Button from "../components/ui/Button";
 
 import "./Home.css";
 
 function Home() {
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(isLoggedIn());
   const [activeTab, setActiveTab] = useState("live");
 
   const [tournaments, setTournaments] = useState([]);
@@ -36,51 +34,16 @@ function Home() {
     loadTournaments();
   }, []);
 
-  function openLogin() {
-    setIsRegisterOpen(false);
-    setIsLoginOpen(true);
-  }
-
-  function openRegister() {
-    setIsLoginOpen(false);
-    setIsRegisterOpen(true);
-  }
-
-  function handleLogout() {
-    logout();
-    setLoggedIn(false);
-  }
-
-  function handleLoginSuccess() {
-    setLoggedIn(true);
-  }
-
-  function getTournamentStatus(tournament) {
-    const today = new Date();
-    const startDate = new Date(tournament.startDate);
-    const endDate = tournament.endDate ? new Date(tournament.endDate) : null;
-
-    if (startDate > today) {
-      return "upcoming";
-    }
-
-    if (endDate && endDate < today) {
-      return "completed";
-    }
-
-    return "live";
-  }
-
   const liveTournaments = tournaments.filter(
-    (tournament) => getTournamentStatus(tournament) === "live",
+    (tournament) => getTournamentStatus(tournament) === "live"
   );
 
   const upcomingTournaments = tournaments.filter(
-    (tournament) => getTournamentStatus(tournament) === "upcoming",
+    (tournament) => getTournamentStatus(tournament) === "upcoming"
   );
 
   const completedTournaments = tournaments.filter(
-    (tournament) => getTournamentStatus(tournament) === "completed",
+    (tournament) => getTournamentStatus(tournament) === "completed"
   );
 
   let tournamentsToShow = liveTournaments;
@@ -93,79 +56,95 @@ function Home() {
     tournamentsToShow = completedTournaments;
   }
 
+  async function handleDeleteTournament(tournamentId) {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this tournament?"
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      await deleteTournament(tournamentId);
+
+      setTournaments((currentTournaments) =>
+        currentTournaments.filter(
+          (tournament) => tournament.id !== tournamentId
+        )
+      );
+    } catch (err) {
+      setError(err.message || "Could not delete tournament");
+    }
+  }
+
   return (
-    <main className="home-page">
-      <Header
-        loggedIn={loggedIn}
-        onLoginClick={openLogin}
-        onLogout={handleLogout}
-      />
+    <PageLayout>
+      {({ user }) => {
+        const admin = user?.role === "ADMIN";
 
-      <Button className="header-button">
-        <Link to="/tournaments/create" className="header-button-link">
-          Create Tournament
-        </Link>
-      </Button>
-
-      <nav className="tournament-tabs">
-        <button
-          className={activeTab === "live" ? "tab-button active" : "tab-button"}
-          onClick={() => setActiveTab("live")}
-        >
-          Live Tournaments
-        </button>
-
-        <button
-          className={
-            activeTab === "upcoming" ? "tab-button active" : "tab-button"
-          }
-          onClick={() => setActiveTab("upcoming")}
-        >
-          Upcoming Tournaments
-        </button>
-
-        <button
-          className={
-            activeTab === "completed" ? "tab-button active" : "tab-button"
-          }
-          onClick={() => setActiveTab("completed")}
-        >
-          Finished Tournaments
-        </button>
-      </nav>
-
-      <section className="tournaments-section">
-        {isLoading && <p>Loading tournaments...</p>}
-
-        {error && <p className="error-message">{error}</p>}
-
-        {!isLoading && !error && (
-          <div className="tournament-grid">
-            {tournamentsToShow.length > 0 ? (
-              tournamentsToShow.map((tournament) => (
-                <TournamentCard key={tournament.id} tournament={tournament} />
-              ))
-            ) : (
-              <p>No tournaments found.</p>
+        return (
+          <section className="home-page">
+            {admin && (
+              <Button className="header-button">
+                <Link to="/tournaments/create" className="header-button-link">
+                  Create Tournament
+                </Link>
+              </Button>
             )}
-          </div>
-        )}
-      </section>
 
-      <LoginModal
-        isOpen={isLoginOpen}
-        onClose={() => setIsLoginOpen(false)}
-        onSwitchToRegister={openRegister}
-        onLoginSuccess={handleLoginSuccess}
-      />
+            <nav className="tournament-tabs">
+              <button
+                className={
+                  activeTab === "live" ? "tab-button active" : "tab-button"
+                }
+                onClick={() => setActiveTab("live")}
+              >
+                Live Tournaments
+              </button>
 
-      <RegisterModal
-        isOpen={isRegisterOpen}
-        onClose={() => setIsRegisterOpen(false)}
-        onSwitchToLogin={openLogin}
-        onRegisterSuccess={handleLoginSuccess}
-      />
-    </main>
+              <button
+                className={
+                  activeTab === "upcoming" ? "tab-button active" : "tab-button"
+                }
+                onClick={() => setActiveTab("upcoming")}
+              >
+                Upcoming Tournaments
+              </button>
+
+              <button
+                className={
+                  activeTab === "completed" ? "tab-button active" : "tab-button"
+                }
+                onClick={() => setActiveTab("completed")}
+              >
+                Finished Tournaments
+              </button>
+            </nav>
+
+            <section className="tournaments-section">
+              {isLoading && <p>Loading tournaments...</p>}
+
+              {error && <p className="error-message">{error}</p>}
+
+              {!isLoading && !error && (
+                <div className="tournament-grid">
+                  {tournamentsToShow.length > 0 ? (
+                    tournamentsToShow.map((tournament) => (
+                      <TournamentCard
+                        key={tournament.id}
+                        tournament={tournament}
+                        onDelete={handleDeleteTournament}
+                      />
+                    ))
+                  ) : (
+                    <p>No tournaments found.</p>
+                  )}
+                </div>
+              )}
+            </section>
+          </section>
+        );
+      }}
+    </PageLayout>
   );
 }
 

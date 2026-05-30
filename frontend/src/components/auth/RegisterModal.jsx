@@ -82,7 +82,7 @@ function RegisterModal({
           ×
         </button>
 
-        <h2>Register</h2>
+        <h2>Create Account</h2>
 
         <form onSubmit={handleSubmit}>
           <label htmlFor="firstName">First Name</label>
