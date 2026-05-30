@@ -1,0 +1,14 @@
+.round-status {
+  margin-top: 16px;
+  font-weight: 600;
+}
+
+.round-status.success {
+  color: green;
+}
+
+.rounds-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+}

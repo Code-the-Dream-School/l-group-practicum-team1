@@ -11,6 +11,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 export default function AddPlayers() {
   const [selectedPlayers, setSelectedPlayers] = useState([]);
   const [tournament, setTournament] = useState(null);
+  // TODO : if tournament starts => navigate to tournament detail page (admin view)
 
   const { tournamentId } = useParams();
   const token = localStorage.getItem("token");
@@ -77,33 +78,31 @@ export default function AddPlayers() {
     }
   }
 
-  // TODO
-  // async function handleGenerateFirstRound() {
-  //   console.log("tournament was started...");
-  //   navigate(`/tournaments/${tournament.id}/rounds`);
-  //   // TODO: add generating first round
-  //   try {
-  //     const response = await fetch(
-  //       `${API_URL}/api/admin/tournaments/${tournamentId}/players`,
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //         body: JSON.stringify({ tournamentId, players: selectedPlayers }),
-  //       },
-  //     );
+  async function handleGenerateFirstRound() {
+    console.log("tournament was started...");
+    try {
+      const response = await fetch(
+        `${API_URL}/api/tournaments/${tournamentId}/rounds`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
 
-  //     if (!response.ok) {
-  //       throw new Error("Failed to add tournament players");
-  //     }
+      if (!response.ok) {
+        throw new Error("Failed to generate a tournament round");
+      }
 
-  //     const data = await response.json();
-  //   } catch (error) {
-  //     console.error("Add tournament players error:", error);
-  //   }
-  // }
+      const data = await response.json();
+
+      navigate(`/tournaments/${tournamentId}/rounds`);
+    } catch (error) {
+      console.error("Create tournament round error:", error);
+    }
+  }
 
   async function handleRemoveTournamentPlayer(playerId) {
     try {
@@ -136,7 +135,7 @@ export default function AddPlayers() {
         setSelectedPlayers={setSelectedPlayers}
         handleAddPlayer={handleAddTournamentPlayer}
         handleRemovePlayer={handleRemoveTournamentPlayer}
-        // handleGenerateFirstRound={handleGenerateFirstRound}
+        handleGenerateFirstRound={handleGenerateFirstRound}
       />
     </PageLayout>
   );
