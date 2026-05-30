@@ -3,12 +3,14 @@ import { useParams } from "react-router-dom";
 import Button from "../components/ui/Button";
 import PageLayout from "../components/layout/PageLayout";
 import MatchResults from "../components/tournaments/MatchResults";
+import "./RoundResults.css";
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default function RoundResults() {
   const [tournament, setTournament] = useState({});
   const [rounds, setRounds] = useState([]);
-  const [activeTab, setActiveTab] = useState(1);
+  const [activeTab, setActiveTab] = useState(null);
 
   const token = localStorage.getItem("token");
   const { tournamentId } = useParams();
@@ -36,11 +38,11 @@ export default function RoundResults() {
       console.log("pagination: \n", results.pagination);
 
       setTournament(results.data[0].tournament);
-      setActiveTab(results.data[0].roundNumber);
+      if (!activeTab) {
+        setActiveTab(results.data[0].roundNumber);
+      }
 
       setRounds(results.data);
-
-      // navigate(`/tournaments/${data.tournament.id}/players`);
     } catch (error) {
       console.error("Get rounds error:", error);
     }
@@ -50,6 +52,8 @@ export default function RoundResults() {
     if (tournamentId) {
       getRounds();
     }
+
+    const isFinal = activeRound?.roundNumber === tournament.totalRounds;
   }, [tournamentId]);
 
   async function handleGenerateNextRound() {
@@ -70,9 +74,8 @@ export default function RoundResults() {
       return;
     }
 
-    console.log("Next round generated:", result);
-
-    getRounds();
+    await getRounds();
+    setActiveTab(result.roundNumber);
   }
 
   const activeRound = rounds.find((round) => round.roundNumber === activeTab);
@@ -80,6 +83,31 @@ export default function RoundResults() {
 
   const activeRoundMatches = activeRound?.matches || [];
   console.log("activeRoundMatches", activeRoundMatches);
+
+  // latest created round
+  const lastRound = rounds[rounds.length - 1];
+
+  const isTournamentCompleted =
+    lastRound?.roundNumber === tournament?.totalRounds &&
+    lastRound?.matches?.every((m) => m.winnerPlayerId !== null);
+
+  console.log("isTournamentCompleted in RoundResults:", isTournamentCompleted);
+
+  // based on current an active tab
+  const isActiveRoundCompleted = activeRound?.matches?.every(
+    (match) => match.winnerPlayerId !== null,
+  );
+
+  // active tab is the latest created round
+  const isLatestCreatedRound =
+    activeRound?.roundNumber === lastRound?.roundNumber;
+
+  const showGenerateNextRoundButton =
+    !isTournamentCompleted && isLatestCreatedRound && isActiveRoundCompleted;
+
+  // completed round matches should not be able to edit
+  const shouldDisableScoreSelects =
+    isTournamentCompleted || !isLatestCreatedRound;
 
   return (
     <PageLayout>
@@ -104,13 +132,33 @@ export default function RoundResults() {
               ))}
             </nav>
 
-            <h2>Round {activeTab} Matches: </h2>
-            <MatchResults matches={activeRoundMatches} />
-            <div className="round-actions">
-              <Button onClick={handleGenerateNextRound}>
-                Generate Next Round
-              </Button>
-            </div>
+            <MatchResults
+              matches={activeRoundMatches}
+              isTournamentCompleted={isTournamentCompleted}
+              disableScoreSelects={shouldDisableScoreSelects}
+              onMatchSaved={getRounds}
+            />
+            {!isTournamentCompleted &&
+              isActiveRoundCompleted &&
+              isLatestCreatedRound && (
+                <div className="round-actions">
+                  <p className="round-status success">
+                    All matches completed. Generate next round.
+                  </p>
+                  <Button
+                    disabled={!isActiveRoundCompleted}
+                    onClick={handleGenerateNextRound}
+                  >
+                    Generate Next Round
+                  </Button>
+                </div>
+              )}
+
+            {isTournamentCompleted && (
+              <div className="round-actions">
+                <p className="round-status success">Tournament completed!</p>
+              </div>
+            )}
           </>
         )}
       </div>

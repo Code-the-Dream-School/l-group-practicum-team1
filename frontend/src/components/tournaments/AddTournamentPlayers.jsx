@@ -34,7 +34,10 @@ export default function AddTournamentPlayers({
             {playersNeeded || 2}
           </p>
           <div className="form-round">
-            <Button onClick={handleGenerateFirstRound}>
+            <Button
+              disabled={playersNeeded !== selectedPlayers.length}
+              onClick={handleGenerateFirstRound}
+            >
               Generate First Round
             </Button>
           </div>{" "}

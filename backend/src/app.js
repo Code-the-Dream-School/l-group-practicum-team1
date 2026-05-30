@@ -37,6 +37,11 @@ app.use("/api/", tournamentRouter);
 //Protected admin routes
 app.use("/api/", authMiddleware, adminRoutes);
 
+//if there is not a route it will return Not Found
+app.use("*", (req, res) => {
+  res.status(404).json({ message: "Not Found" });
+});
+
 // Root route
 app.get("/", (req, res) => {
   res.send("Backend API is running");
