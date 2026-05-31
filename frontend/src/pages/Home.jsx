@@ -8,6 +8,7 @@ import {
   getTournaments,
   deleteTournament,
 } from "../services/tournamentService";
+import { Plus } from "lucide-react";
 import Button from "../components/ui/Button";
 
 import "./Home.css";
@@ -83,43 +84,49 @@ function Home() {
 
         return (
           <section className="home-page">
-            {admin && (
-              <Button className="header-button">
-                <Link to="/tournaments/create" className="header-button-link">
-                  Create Tournament
-                </Link>
-              </Button>
-            )}
+            <div className="tournaments-toolbar">
+              <nav className="tournament-tabs">
+                <button
+                  className={
+                    activeTab === "live" ? "tab-button active" : "tab-button"
+                  }
+                  onClick={() => setActiveTab("live")}
+                >
+                  Live
+                </button>
 
-            <nav className="tournament-tabs">
-              <button
-                className={
-                  activeTab === "live" ? "tab-button active" : "tab-button"
-                }
-                onClick={() => setActiveTab("live")}
-              >
-                Live Tournaments
-              </button>
+                <button
+                  className={
+                    activeTab === "upcoming"
+                      ? "tab-button active"
+                      : "tab-button"
+                  }
+                  onClick={() => setActiveTab("upcoming")}
+                >
+                  Upcoming
+                </button>
 
-              <button
-                className={
-                  activeTab === "upcoming" ? "tab-button active" : "tab-button"
-                }
-                onClick={() => setActiveTab("upcoming")}
-              >
-                Upcoming Tournaments
-              </button>
+                <button
+                  className={
+                    activeTab === "completed"
+                      ? "tab-button active"
+                      : "tab-button"
+                  }
+                  onClick={() => setActiveTab("completed")}
+                >
+                  Finished
+                </button>
+              </nav>
 
-              <button
-                className={
-                  activeTab === "completed" ? "tab-button active" : "tab-button"
-                }
-                onClick={() => setActiveTab("completed")}
-              >
-                Finished Tournaments
-              </button>
-            </nav>
-
+              {admin && (
+                <Button className="create-tournament-button">
+                  <Link to="/tournaments/create" className="header-button-link">
+                    <Plus size={18} />
+                    Create Tournament
+                  </Link>
+                </Button>
+              )}
+            </div>
             <section className="tournaments-section">
               {isLoading && <p>Loading tournaments...</p>}
 

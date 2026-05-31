@@ -28,19 +28,19 @@ export async function getRounds(tournamentId) {
     `${API_URL}/api/tournaments/${tournamentId}/rounds`
   );
 
-  let data;
+  let result;
 
   try {
-    data = await response.json();
+    result = await response.json();
   } catch {
-    data = [];
+    result = {};
   }
 
   if (!response.ok) {
-    throw new Error(data.message || "Could not load rounds");
+    throw new Error(result.message || result.error || "Could not load rounds");
   }
 
-  return data;
+  return result.data || [];
 }
 
 //added the ...authHeader() to protect the routes for only admins
