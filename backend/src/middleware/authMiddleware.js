@@ -2,7 +2,6 @@ const jwt = require("jsonwebtoken");
 const prisma = require("../prisma.js");
 const express = require("express");
 
-
 const router = express.Router();
 
 const authMiddleware = async (req, res, next) => {

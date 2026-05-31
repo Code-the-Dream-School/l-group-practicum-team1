@@ -16,13 +16,15 @@ function Header({ user, loggedIn, onLoginClick, onLogout }) {
 
       <div className="header-actions">
         {loggedIn && user && (
-          <div className="user-status">
+          <Link to="/profile" className="user-status">
             <User size={16} />
 
             <span>{user.firstName}</span>
 
-            {isAdmin && <span className="admin-badge">ADMIN</span>}
-          </div>
+            {user.role === "ADMIN" && (
+              <span className="admin-badge">ADMIN</span>
+            )}
+          </Link>
         )}
 
         <button

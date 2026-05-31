@@ -120,5 +120,66 @@ const logout = async (req, res) => {
 
   res.json({ message: "User has logged out" });
 };
+const getMe = async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        phone: true,
+        rating: true,
+        role: true,
+      },
+    });
 
-module.exports = { register, login, logout };
+    if (!user) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        message: "User not found",
+      });
+    }
+
+    res.status(StatusCodes.OK).json({ user });
+  } catch (err) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: "Server error",
+    });
+  }
+};
+
+const updateMe = async (req, res) => {
+  try {
+    const { firstName, lastName, phone, rating } = req.body;
+
+    const updatedUser = await prisma.user.update({
+      where: { id: req.user.id },
+      data: {
+        firstName,
+        lastName,
+        phone,
+        rating: rating ? Number(rating) : null,
+      },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        phone: true,
+        rating: true,
+        role: true,
+      },
+    });
+
+    res.status(StatusCodes.OK).json({
+      message: "Profile updated successfully",
+      user: updatedUser,
+    });
+  } catch (err) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: "Server error",
+    });
+  }
+};
+module.exports = { register, login, logout, getMe, updateMe };

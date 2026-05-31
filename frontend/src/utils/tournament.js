@@ -25,3 +25,15 @@ export function formatTournamentDateRange(startDate, endDate) {
 
   return `${formattedStart} - ${formattedEnd}`;
 }
+
+export function getMaxPlayers(totalRounds) {
+  if (!totalRounds) return 0;
+
+  return 2 ** totalRounds;
+}
+
+export function formatPlayerCapacity(registeredPlayers, totalRounds) {
+  const maxPlayers = getMaxPlayers(totalRounds);
+
+  return `${registeredPlayers}/${maxPlayers} Players`;
+}
