@@ -28,11 +28,15 @@ export default function AddTournamentPlayers({
     <>
       <section className="form-section">
         <div className="form-summary">
-          <p>Tournament: {tournament.name}</p>
-          <p>
-            Rounds: {tournament.totalRounds || 1} Players needed:{" "}
-            {playersNeeded || 2}
-          </p>
+          <div className="form-summary-info">
+            <h2 className="form-summary-title">
+              Tournament: {tournament.name}
+            </h2>
+            <p className="form-summary-subtitle">
+              Rounds: {tournament.totalRounds || 1} Players needed:{" "}
+              {playersNeeded || 2}
+            </p>
+          </div>
           <div className="form-round">
             <Button
               disabled={playersNeeded !== selectedPlayers.length}

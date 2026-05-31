@@ -1,5 +1,16 @@
 .form-section {
-  padding: 20px;
+  background-color: var(--panel-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-weight: 800;
+  text-transform: capitalize;
+  padding: 0.75rem 1.5rem;
+  max-width: 900px;
+  letter-spacing: 0.05em;
+  margin: 2rem auto;
+  color: var(--text-primary);
+  /* Optional: adds a slight shadow to make it pop like the image */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .form-title {
@@ -31,10 +42,31 @@
 }
 
 .form-summary {
-  margin-bottom: 32px;
-  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border-color);
+}
+.form-summary-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
+.form-summary-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.form-summary-subtitle {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
 .form-actions {
   margin-top: 96px;
   display: flex;
@@ -48,6 +80,20 @@
   justify-content: space-between;
 }
 
+.form-round button:not(:disabled) {
+  background-color: var(--accent-color, #00f3ff);
+  color: var(--button-text-dark, #0a0f1d);
+  border-color: var(--accent-color, #00f3ff);
+  box-shadow: 0 0 15px rgba(0, 243, 255, 0.4); /* Neon Glow */
+}
+
+.form-round button:disabled {
+  background-color: transparent;
+  color: var(--text-secondary);
+  border-color: var(--border-color);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
 @media (min-width: 768px) {
   .form-grid {
     grid-template-columns: 1fr 1fr;

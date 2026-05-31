@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Input from "../ui/Input";
 import "./TournamentPlayerSelector.css";
+import { User, Trash2 } from "lucide-react";
 
 export default function TournamentPlayerSelector({
   selectedPlayers,
@@ -69,11 +70,11 @@ export default function TournamentPlayerSelector({
     onAddPlayer(player);
     setSearch("");
   }
-
+  const isFull = maxPlayers && selectedPlayers.length >= maxPlayers;
   return (
     <div className="player-selector">
       <div className="player-search">
-        <h3 className="player-selector-title">Add players:</h3>
+        <h3 className="player-selector-title selected-title">Add players:</h3>
 
         <Input
           value={search}
@@ -90,7 +91,13 @@ export default function TournamentPlayerSelector({
                   onClick={() => handleSelectPlayer(player)}
                   className="player-dropdown-btn"
                 >
-                  {player.firstName} {player.lastName}
+                  <div className="player-dropdown-identity">
+                    <User size={16} className="player-dropdown-icon" />
+                    <span className="player-name">
+                      {player.firstName} {player.lastName}
+                    </span>
+                  </div>
+
                   {player.rating && (
                     <span className="player-rating">
                       Rating: {player.rating}
@@ -105,32 +112,41 @@ export default function TournamentPlayerSelector({
 
       <div>
         <h3 className="player-selector-title selected-title">
-          Selected Players: {selectedPlayers.length} / {maxPlayers || "N"}
+          Selected Players:{" "}
+          <span className={`selected-count-badge ${isFull ? "full" : ""}`}>
+            {selectedPlayers.length} / {maxPlayers || "N"}
+          </span>
         </h3>
 
-        {selectedPlayers.length === 0 ? (
-          <p className="empty-text">No players selected yet.</p>
-        ) : (
-          <ol className="selected-player-list">
-            {selectedPlayers.map((player) => (
-              <li key={player.id} className="selected-player">
-                <span>
-                  {player.firstName} {player.lastName}
-                </span>
+        <div className="selected-container">
+          {selectedPlayers.length === 0 ? (
+            <p className="empty-text">No players selected yet.</p>
+          ) : (
+            <ul className="selected-player-list">
+              {selectedPlayers.map((player) => (
+                <li key={player.id} className="selected-player-card">
+                  <div className="player-info">
+                    <span className="name">
+                      {player.firstName} {player.lastName}
+                    </span>
 
-                <span>Rating: {player.rating}</span>
+                    {player.rating && (
+                      <span className="rating">Rating: {player.rating}</span>
+                    )}
+                  </div>
 
-                <button
-                  type="button"
-                  onClick={() => onRemovePlayer(player.id)}
-                  className="remove-player-btn"
-                >
-                  [Remove]
-                </button>
-              </li>
-            ))}
-          </ol>
-        )}
+                  <button
+                    type="button"
+                    onClick={() => onRemovePlayer(player.id)}
+                    className="remove-player-btn"
+                  >
+                    <Trash2 size={18} strokeWidth={2} />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
     </div>
   );
