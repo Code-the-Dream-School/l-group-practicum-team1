@@ -87,6 +87,23 @@
   gap: 0.5rem;
 }
 
+.user-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  color: var(--text-secondary);
+  text-decoration: none;
+
+  transition: all 0.2s ease;
+}
+
+.user-status:hover {
+  color: var(--accent-color);
+
+  text-shadow: 0 0 6px rgba(0, 243, 255, 0.35);
+}
+
 @media (max-width: 768px) {
   .site-header {
     grid-template-columns: 1fr;

@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 import { isAdmin } from "../../utils/auth";
+import PlayerCount from "../players/PlayerCount";
 import {
   CalendarDays,
   MapPin,
   Clock,
   Trophy,
   Layers,
-  Users,
   Edit,
   Trash2,
 } from "lucide-react";
@@ -15,20 +15,9 @@ import "./TournamentCard.css";
 
 function TournamentCard({ tournament, onDelete }) {
   const admin = isAdmin();
-
-  const formattedDate = new Date(tournament.startDate).toLocaleDateString();
-
   const startDate = new Date(tournament.startDate);
-
   const endDate = new Date(tournament.endDate);
-
   const tournamentDates = `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`;
-
-  const playerCount =
-    tournament.playerCount ||
-    tournament.playersCount ||
-    tournament.tournamentPlayers?.length ||
-    0;
 
   return (
     <div className="tournament-card-wrapper">
@@ -65,10 +54,10 @@ function TournamentCard({ tournament, onDelete }) {
             {tournament.totalRounds} Rounds
           </span>
 
-          <span>
-            <Users size={15} />
-            {playerCount} Players
-          </span>
+          <PlayerCount
+            tournamentId={tournament.id}
+            totalRounds={tournament.totalRounds}
+          />
         </div>
       </Link>
 
@@ -76,7 +65,6 @@ function TournamentCard({ tournament, onDelete }) {
         <div className="admin-actions">
           <button type="button" className="edit-button">
             <Edit size={16} />
-            Edit
           </button>
 
           <button
@@ -85,7 +73,6 @@ function TournamentCard({ tournament, onDelete }) {
             onClick={() => onDelete(tournament.id)}
           >
             <Trash2 size={16} />
-            Delete
           </button>
         </div>
       )}
