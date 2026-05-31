@@ -10,9 +10,7 @@ export function saveAuthData(data) {
 
 export function getCurrentUser() {
   const user = localStorage.getItem("user");
-
   if (!user) return null;
-
   return JSON.parse(user);
 }
 
@@ -22,13 +20,11 @@ export function isLoggedIn() {
 
 export function isAdmin() {
   const user = getCurrentUser();
-
   return user?.role === "ADMIN";
 }
 
 export function authHeader() {
   const token = localStorage.getItem("token");
-
   if (!token) {
     return {};
   }

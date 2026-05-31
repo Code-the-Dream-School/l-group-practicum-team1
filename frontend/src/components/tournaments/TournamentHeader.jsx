@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
-
+import TournamentRegistrationButton from "./TournamentRegistrationButton";
+import PlayerCount from "../players/PlayerCount";
 import { getTournaments } from "../../services/tournamentService";
 import {
   getTournamentStatus,
   formatTournamentDateRange,
 } from "../../utils/tournament";
+import { CalendarDays, MapPin, Clock, Trophy, Layers } from "lucide-react";
+import "./TournamentHeader.css";
 
-function TournamentHeader({ tournamentId }) {
+function TournamentHeader({ tournamentId, registrationClosed }) {
   const [tournament, setTournament] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -38,25 +41,58 @@ function TournamentHeader({ tournamentId }) {
     return <h1>Tournament not found</h1>;
   }
 
+  const status = getTournamentStatus(tournament);
+
   return (
-    <header>
+    <header className="tournament-header">
       <h1>{tournament.name}</h1>
 
-      <p>
-        {getTournamentStatus(tournament) === "live" && "🟢 Live"}
-        {getTournamentStatus(tournament) === "upcoming" && "🔵 Upcoming"}
-        {getTournamentStatus(tournament) === "completed" && "⚫ Finished"}
-      </p>
+      <TournamentRegistrationButton
+        tournamentId={tournamentId}
+        registrationClosed={registrationClosed}
+      />
 
-      <p>📍 {tournament.location}</p>
+      <div className="tournament-card-top">
+        <span className="tournament-type-badge">
+          <Trophy size={14} />
+          {tournament.tournamentType}
+        </span>
 
-      <p>
-        📅 {formatTournamentDateRange(tournament.startDate, tournament.endDate)}
-      </p>
+        <span className={`status-badge status-${status}`}>
+          {status === "live" && "🟢 Live"}
+          {status === "upcoming" && "🔵 Upcoming"}
+          {status === "completed" && "⚫ Finished"}
+        </span>
+      </div>
 
-      <p>♟️ {tournament.timeControl}</p>
+      <div className="tournament-info-list">
+        <p>
+          <CalendarDays size={18} />
+          {formatTournamentDateRange(tournament.startDate, tournament.endDate)}
+        </p>
 
-      <p>🏆 {tournament.tournamentType}</p>
+        <p>
+          <MapPin size={18} />
+          {tournament.location}
+        </p>
+
+        <p>
+          <Clock size={18} />
+          {tournament.timeControl}
+        </p>
+      </div>
+
+      <div className="tournament-header-stats">
+        <PlayerCount
+          tournamentId={tournament.id}
+          totalRounds={tournament.totalRounds}
+        />
+
+        <span>
+          <Layers size={16} />
+          {tournament.totalRounds} Rounds
+        </span>
+      </div>
     </header>
   );
 }

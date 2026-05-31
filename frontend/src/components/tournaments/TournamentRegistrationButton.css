@@ -1,0 +1,67 @@
+.registration-action {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.registration-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: 145px;
+  padding: 0.85rem 1.25rem;
+  border: 1px solid var(--accent-color);
+  border-radius: 12px;
+  background: var(--accent-color);
+  color: var(--button-text-dark);
+  font-family: "Rajdhani", sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.registration-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 0 8px rgba(0, 243, 255, 0.25), 0 0 16px rgba(0, 243, 255, 0.15),
+    0 0 32px rgba(0, 243, 255, 0.08);
+}
+
+.registration-button.withdraw {
+  background: transparent;
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.registration-button.withdraw:hover:not(:disabled) {
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.2), 0 0 16px rgba(239, 68, 68, 0.12);
+}
+
+.registration-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.registration-button:disabled:hover {
+  transform: none;
+}
+
+.registration-message {
+  max-width: 220px;
+  text-align: right;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .registration-action {
+    align-items: stretch;
+  }
+
+  .registration-message {
+    max-width: 100%;
+    text-align: left;
+  }
+}
