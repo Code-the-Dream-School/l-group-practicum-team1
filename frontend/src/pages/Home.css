@@ -3,34 +3,96 @@
   padding: 2rem;
 }
 
+/* =========================
+     Tabs + Create Tournament
+     ========================= */
+
+.tournaments-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
 .tournament-tabs {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 2rem;
+  gap: 2rem;
+  margin-bottom: 0;
 }
 
 .tab-button {
-  padding: 0.75rem 1.25rem;
-  border: 1px solid var(--border-color);
-  border-radius: 999px;
-  background: var(--panel-bg);
-  color: var(--text-secondary);
+  position: relative;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: var(--text-tertiary);
+  font-family: "Inter", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .tab-button:hover {
-  border-color: var(--hover-border);
-  color: var(--accent-color);
+  color: var(--text-primary);
 }
 
 .tab-button.active {
+  color: var(--accent-color);
+}
+
+.tab-button.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 3px;
   background: var(--accent-color);
-  border-color: var(--accent-color);
+  border-radius: 999px;
+  box-shadow: 0 0 6px rgba(0, 243, 255, 0.5), 0 0 12px rgba(0, 243, 255, 0.25);
+}
+
+/* =========================
+     Create Tournament Button
+     ========================= */
+
+.create-tournament-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 42px;
+  padding: 0 1.25rem;
+  border: 1px solid var(--accent-color);
+  border-radius: 10px;
+  background: var(--accent-color);
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.create-tournament-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 8px rgba(0, 243, 255, 0.25), 0 0 16px rgba(0, 243, 255, 0.15);
+}
+
+.header-button-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   color: var(--button-text-dark);
+  text-decoration: none;
   font-weight: 700;
 }
+
+/* =========================
+     Tournament Grid
+     ========================= */
 
 .tournaments-section {
   margin-bottom: 2rem;
@@ -42,22 +104,17 @@
   gap: 1.5rem;
 }
 
-.header-button {
-  margin-bottom: 1.5rem;
-  background: var(--accent-color);
-  border: none;
-  border-radius: 999px;
-}
-
-.header-button-link {
-  text-decoration: none;
-  color: var(--button-text-dark);
-  font-weight: 700;
-}
+/* =========================
+     Messages
+     ========================= */
 
 .error-message {
   color: #f87171;
 }
+
+/* =========================
+     Responsive
+     ========================= */
 
 @media (max-width: 900px) {
   .tournament-grid {
@@ -72,5 +129,20 @@
 
   .tournament-grid {
     grid-template-columns: 1fr;
+  }
+
+  .tournaments-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .create-tournament-button {
+    justify-content: center;
+  }
+
+  .tournament-tabs {
+    justify-content: space-between;
+    gap: 1rem;
   }
 }

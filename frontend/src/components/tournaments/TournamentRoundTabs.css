@@ -1,0 +1,109 @@
+.round-tabs {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.round-tab {
+  padding: 0.65rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  background: var(--panel-bg);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.round-tab.active {
+  background: var(--accent-color);
+  color: var(--button-text-dark);
+  border-color: var(--accent-color);
+  font-weight: 700;
+}
+
+.round-panel {
+  margin-top: 1rem;
+}
+
+.match-preview-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0;
+  list-style: none;
+}
+
+.match-preview-item {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.75rem;
+}
+
+.round-results-link {
+  color: var(--accent-color);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.match-line {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.match-player {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.winner-player {
+  color: var(--accent-color);
+  font-weight: 700;
+}
+
+.winner-crown {
+  color: #facc15;
+}
+
+.match-vs {
+  color: var(--text-tertiary);
+  font-family: "Orbitron", sans-serif;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.round-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.round-panel-header h3 {
+  margin: 0;
+  font-family: "Orbitron", sans-serif;
+  color: var(--text-primary);
+}
+
+.round-results-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1rem;
+  border: 1px solid var(--accent-color);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--accent-color);
+  font-family: "Rajdhani", sans-serif;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.round-results-button:hover {
+  box-shadow: 0 0 8px rgba(0, 243, 255, 0.15), 0 0 16px rgba(0, 243, 255, 0.08);
+}

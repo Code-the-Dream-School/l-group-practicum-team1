@@ -4,6 +4,8 @@ import TournamentDetails from "./pages/TournamentDetails";
 import CreateTournament from "./pages/CreateTournament";
 import AddPlayers from "./pages/AddPlayers";
 import RoundResults from "./pages/RoundResults";
+import Profile from "./pages/Profile";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -23,6 +25,10 @@ function App() {
       />
 
       <Route path="/tournaments/create" element={<CreateTournament />} />
+
+      <Route path="/profile" element={<Profile />} />
+
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

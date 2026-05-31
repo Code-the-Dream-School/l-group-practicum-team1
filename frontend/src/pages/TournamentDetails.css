@@ -1,0 +1,64 @@
+.tournament-details-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.tournament-details-header-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 1.5rem;
+}
+.tournament-detail-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.add-players-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.25rem;
+  border: 1px solid var(--accent-color);
+  border-radius: 12px;
+  background: var(--accent-color);
+  color: var(--button-text-dark);
+  font-family: "Rajdhani", sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.add-players-button:hover {
+  transform: translateY(-2px);
+
+  box-shadow: 0 0 8px rgba(0, 243, 255, 0.25), 0 0 16px rgba(0, 243, 255, 0.15);
+}
+
+.add-players-button.disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: var(--border-color);
+  color: var(--text-muted);
+  border-color: var(--border-color);
+}
+
+.add-players-button.disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.rounds-wrapper {
+  padding-top: 1rem;
+}
+
+@media (max-width: 768px) {
+  .tournament-details-header-row {
+    grid-template-columns: 1fr;
+  }
+}
