@@ -27,7 +27,7 @@ const authMiddleware = async (req, res, next) => {
 
     // Once we verify the token we are geting the user.id ---> decoded.id from the data base with the admin privelages.
     const user = await prisma.user.findUnique({
-      where: { id: decoded.id, role: "ADMIN" },
+      where: { id: decoded.id, role: "ADMIN"},
     });
     if (!user) {
       return res.status(401).json({ error: "User no longer exists" });

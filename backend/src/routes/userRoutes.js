@@ -6,12 +6,13 @@ const {
   updateMe,
 } = require("../controllers/userController");
 const authMiddleware = require("../middleware/authMiddleware");
+const userMiddleware = require('../middleware/userMiddleware')
 const express = require("express");
 
 const userRoutes = express.Router();
 
-userRoutes.get("/auth/me", authMiddleware, getMe);
-userRoutes.patch("/auth/me", authMiddleware, updateMe);
+userRoutes.get("/auth/me", userMiddleware, getMe);
+userRoutes.patch("/auth/me", userMiddleware, updateMe);
 userRoutes.post("/auth/register", register);
 userRoutes.post("/auth/login", login);
 userRoutes.post("/auth/logout", logout);

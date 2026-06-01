@@ -15,10 +15,14 @@ export default function TournamentPlayerSelector({
 
   const token = localStorage.getItem("token");
 
-  // fetch search players
+  // fetch search players with debouncing
   useEffect(() => {
-    async function fetchPlayers() {
-      if (!search.length) return;
+    // Create a timer that waits 500ms before fetching
+    const timer = setTimeout(async () => {
+      if (!search.length) {
+        setPlayers([]);
+        return;
+      }
       try {
         setIsLoading(true);
 
@@ -45,10 +49,11 @@ export default function TournamentPlayerSelector({
       } finally {
         setIsLoading(false);
       }
-    }
+    }, 500); // Wait 500ms after user stops typing
 
-    fetchPlayers();
-  }, [search]);
+    // Clean up the timer if the user types again before the request is made
+    return () => clearTimeout(timer);
+  }, [search, token]);
 
   // filter players from search
   const filteredPlayers = useMemo(() => {
