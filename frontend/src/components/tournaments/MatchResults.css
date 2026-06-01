@@ -1,9 +1,46 @@
 .match-results {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 16px;
+}
+.match-card {
+  background-color: var(--panel-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  display: grid;
+  grid-template-columns: auto 1fr auto 1fr auto;
+  align-items: center;
+  gap: 20px;
+  transition: all 0.3s ease;
+}
+.board-header {
+  grid-column: 1 / -1;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+.player-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-primary);
 }
 
+.match-center {
+  display: flex;
+  justify-content: center;
+}
+
+.player-info.winner {
+  color: var(--accent-color);
+  text-shadow: 0 0 8px rgba(0, 243, 255, 0.3);
+}
+.match-card:hover {
+  border-color: var(--accent-color);
+}
 .match-row {
   display: grid;
   grid-template-columns: 1fr 140px 1fr 100px;
@@ -22,14 +59,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 12px;
   font-weight: 700;
 }
 
 .score-controls select {
+  background-color: var(--panel-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
   width: 55px;
-  padding: 6px;
-  font-size: 16px;
+  padding: 4px 8px;
+  font-size: 14px;
+  border-radius: 4px;
 }
 
 .match-row button {
@@ -44,9 +85,12 @@
 
 .player-name.winner {
   font-weight: 700;
-  background-color: #e6f4ea;
+  background-color: rgba(0, 243, 255, 0.1);
+  border: 1px solid rgba(0, 243, 255, 0.3);
   border-radius: 8px;
   padding: 6px 10px;
+  color: var(--accent-color);
+  text-shadow: 0 0 8px rgba(0, 243, 255, 0.4);
 }
 
 select:disabled {
@@ -66,4 +110,27 @@ select:disabled {
 
 .chess-icon.black {
   color: black;
+}
+.vs-icon {
+  color: var(--accent-color);
+}
+
+.save-btn {
+  background: transparent;
+  border: 1px solid #1a2b4b;
+  color: #64748b;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.save-btn:hover:not(:disabled) {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  box-shadow: 0 0 8px rgba(0, 243, 255, 0.3);
+}
+
+.save-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
 }

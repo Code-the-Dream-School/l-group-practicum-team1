@@ -4,6 +4,7 @@ import Input from "../ui/Input";
 import Select from "../ui/Select";
 import "./MatchResults.css";
 const API_URL = import.meta.env.VITE_API_URL;
+import { Save, Sword, User } from "lucide-react";
 
 const scoreOptions = ["0", "0.5", "1"];
 
@@ -139,8 +140,9 @@ export default function MatchResults({
       {!matches ? (
         <p>Loading matches...</p>
       ) : (
-        roundMatches.map((match) => (
-          <div key={match.id} className="match-row">
+        roundMatches.map((match, index) => (
+          <div key={match.id} className="match-card">
+            <div className="board-header">Board {index + 1}</div>
             <div
               className={`player-name ${
                 getWinnerPlayerId(match) === match.player1Id ? "winner" : ""
@@ -149,7 +151,9 @@ export default function MatchResults({
               <span className={`chess-icon`}>
                 {match.player1Color === "BLACK" ? "\u265F" : "\u2659"}
               </span>
-              {match.player1.user.firstName} {match.player1.user.lastName}
+              <span className="player-name">
+                {match.player1.user.firstName} {match.player1.user.lastName}
+              </span>
             </div>
 
             <div className="score-controls">
@@ -167,7 +171,7 @@ export default function MatchResults({
                 ))}
               </select>
 
-              <span>-</span>
+              <Sword size={16} className="vs-icon" />
 
               <select
                 value={match.player2Score ?? "0"}
@@ -192,10 +196,13 @@ export default function MatchResults({
               <span className={`chess-icon`}>
                 {match.player2Color === "BLACK" ? "\u265F" : "\u2659"}
               </span>
-              {match.player2.user.firstName} {match.player2.user.lastName}
+              <span className="player-name">
+                {match.player2.user.firstName} {match.player2.user.lastName}
+              </span>
             </div>
 
             <Button
+              className="save-btn"
               disabled={isTournamentCompleted || !isMatchChanged(match)}
               onClick={() => handleSaveMatch(match)}
             >
