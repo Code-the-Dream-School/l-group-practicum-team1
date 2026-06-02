@@ -5,11 +5,13 @@ import { getTournaments } from "../../services/tournamentService";
 import {
   getTournamentStatus,
   formatTournamentDateRange,
+  getTournamentResult,
 } from "../../utils/tournament";
 import { CalendarDays, MapPin, Clock, Trophy, Layers } from "lucide-react";
 import "./TournamentHeader.css";
+import TournamentResult from "./TournamentResult";
 
-function TournamentHeader({ tournamentId, registrationClosed }) {
+function TournamentHeader({ tournamentId, registrationClosed, rounds = [] }) {
   const [tournament, setTournament] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -19,9 +21,8 @@ function TournamentHeader({ tournamentId, registrationClosed }) {
         const tournaments = await getTournaments();
 
         const selectedTournament = tournaments.find(
-          (tournament) => tournament.id === tournamentId
+          (tournament) => tournament.id === tournamentId,
         );
-
         setTournament(selectedTournament);
       } catch (error) {
         console.error(error);
@@ -43,14 +44,28 @@ function TournamentHeader({ tournamentId, registrationClosed }) {
 
   const status = getTournamentStatus(tournament);
 
+  const lastRound = [...rounds].sort(
+    (a, b) => b.roundNumber - a.roundNumber,
+  )[0];
+
+  const finalMatch = lastRound?.matches?.[0];
+
+  const isTournamentCompleted =
+    lastRound?.roundNumber === tournament.totalRounds &&
+    Boolean(finalMatch?.winnerPlayerId);
+
+  const winners = isTournamentCompleted ? getTournamentResult(rounds) : null;
+
   return (
     <header className="tournament-header">
       <h1>{tournament.name}</h1>
 
-      <TournamentRegistrationButton
-        tournamentId={tournamentId}
-        registrationClosed={registrationClosed}
-      />
+      {status === "upcoming" && !registrationClosed && (
+        <TournamentRegistrationButton
+          tournamentId={tournamentId}
+          registrationClosed={registrationClosed}
+        />
+      )}
 
       <div className="tournament-card-top">
         <span className="tournament-type-badge">
@@ -81,6 +96,8 @@ function TournamentHeader({ tournamentId, registrationClosed }) {
           {tournament.timeControl}
         </p>
       </div>
+
+      {winners && <TournamentResult winners={winners} />}
 
       <div className="tournament-header-stats">
         <PlayerCount

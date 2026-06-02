@@ -1,0 +1,77 @@
+.tournament-result {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.result-label,
+.winner-title,
+.runner-up-title,
+.final-score {
+  font-family: "Rajdhani", sans-serif;
+  color: var(--text-tertiary);
+}
+
+.result-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.winner-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+
+.winner-title,
+.runner-up-title {
+  font-size: 0.7rem;
+  font-weight: 600;
+  width: fit-content;
+  background: rgba(148, 163, 184, 0.15);
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.winner-name {
+  font-family: "Rajdhani", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.runner-up-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.runner-up-name {
+  font-family: "Rajdhani", sans-serif;
+  font-size: 1.35rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+.final-score {
+  margin-top: 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+}
+
+.final-score span {
+  color: var(--text-secondary);
+}
+
+.result-divider {
+  height: 1px;
+  background: var(--border-color);
+  margin: 0.75rem 0 1rem;
+}

@@ -6,6 +6,7 @@ import PageLayout from "../components/layout/PageLayout";
 import TournamentHeader from "../components/tournaments/TournamentHeader";
 import TournamentRoundTabs from "../components/tournaments/TournamentRoundTabs";
 import { getRounds } from "../services/tournamentService";
+import { getTournamentResult } from "../utils/tournament";
 
 import "./TournamentDetails.css";
 
@@ -42,6 +43,7 @@ function TournamentDetails() {
             <TournamentHeader
               tournamentId={tournamentId}
               registrationClosed={hasRounds}
+              rounds={rounds}
             />
 
             {isAdmin && (

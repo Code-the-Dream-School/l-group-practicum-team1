@@ -37,3 +37,41 @@ export function formatPlayerCapacity(registeredPlayers, totalRounds) {
 
   return `${registeredPlayers}/${maxPlayers} Players`;
 }
+
+export function getTournamentResult(rounds) {
+  if (!rounds.length) return null;
+
+  const finalRound = [...rounds].sort(
+    (a, b) => b.roundNumber - a.roundNumber,
+  )[0];
+
+  const finalMatch = finalRound.matches?.[0];
+
+  if (!finalMatch?.winnerPlayerId) return null;
+
+  const winner =
+    finalMatch.winnerPlayerId === finalMatch.player1.id
+      ? finalMatch.player1
+      : finalMatch.player2;
+
+  const runnerUp =
+    finalMatch.player1?.id === winner.id
+      ? finalMatch.player2
+      : finalMatch.player1;
+
+  const player1Score = finalMatch.player1Score;
+  const player2Score = finalMatch.player2Score;
+
+  const highScore = Math.max(player1Score, player2Score);
+  const lowScore = Math.min(player1Score, player2Score);
+
+  function formatScore(score) {
+    return score === 0.5 ? "1/2" : score;
+  }
+
+  return {
+    winner,
+    runnerUp,
+    finalScore: `${formatScore(highScore)} - ${formatScore(lowScore)}`,
+  };
+}
