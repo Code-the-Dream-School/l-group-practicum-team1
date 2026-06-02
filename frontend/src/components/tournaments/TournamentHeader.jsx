@@ -5,11 +5,13 @@ import { getTournaments } from "../../services/tournamentService";
 import {
   getTournamentStatus,
   formatTournamentDateRange,
+  getTournamentResult,
 } from "../../utils/tournament";
 import { CalendarDays, MapPin, Clock, Trophy, Layers } from "lucide-react";
 import "./TournamentHeader.css";
+import TournamentResult from "./TournamentResult";
 
-function TournamentHeader({ tournamentId, registrationClosed }) {
+function TournamentHeader({ tournamentId, registrationClosed, winners }) {
   const [tournament, setTournament] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -19,7 +21,7 @@ function TournamentHeader({ tournamentId, registrationClosed }) {
         const tournaments = await getTournaments();
 
         const selectedTournament = tournaments.find(
-          (tournament) => tournament.id === tournamentId
+          (tournament) => tournament.id === tournamentId,
         );
 
         setTournament(selectedTournament);
@@ -47,10 +49,12 @@ function TournamentHeader({ tournamentId, registrationClosed }) {
     <header className="tournament-header">
       <h1>{tournament.name}</h1>
 
-      <TournamentRegistrationButton
-        tournamentId={tournamentId}
-        registrationClosed={registrationClosed}
-      />
+      {status === "upcoming" && !registrationClosed && (
+        <TournamentRegistrationButton
+          tournamentId={tournamentId}
+          registrationClosed={registrationClosed}
+        />
+      )}
 
       <div className="tournament-card-top">
         <span className="tournament-type-badge">
@@ -81,6 +85,8 @@ function TournamentHeader({ tournamentId, registrationClosed }) {
           {tournament.timeControl}
         </p>
       </div>
+
+      {winners && TournamentResult(winners)}
 
       <div className="tournament-header-stats">
         <PlayerCount
