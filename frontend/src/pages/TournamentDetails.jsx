@@ -16,28 +16,14 @@ function TournamentDetails() {
   const [rounds, setRounds] = useState([]);
   const [roundsError, setRoundsError] = useState("");
   const [isLoadingRounds, setIsLoadingRounds] = useState(true);
-  const [winners, setWinners] = useState(null);
 
   useEffect(() => {
     async function loadRounds() {
       try {
         const data = await getRounds(tournamentId);
         setRounds(data);
-        const tournamentFinalResult = data.length
-          ? getTournamentResult(data)
-          : null;
-
-        if (
-          !tournamentFinalResult ||
-          Object.keys(tournamentFinalResult).length === 0
-        ) {
-          setWinners(null);
-        } else {
-          setWinners(tournamentFinalResult);
-        }
       } catch (err) {
         setRoundsError(err.message || "Could not load rounds");
-        setWinners(null);
       } finally {
         setIsLoadingRounds(false);
       }
@@ -57,10 +43,10 @@ function TournamentDetails() {
             <TournamentHeader
               tournamentId={tournamentId}
               registrationClosed={hasRounds}
-              winners={winners}
+              rounds={rounds}
             />
 
-            {isAdmin && !winners && (
+            {isAdmin && (
               <div className="tournament-detail-actions">
                 {hasRounds ? (
                   <button

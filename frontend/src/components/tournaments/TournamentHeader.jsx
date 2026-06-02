@@ -11,7 +11,7 @@ import { CalendarDays, MapPin, Clock, Trophy, Layers } from "lucide-react";
 import "./TournamentHeader.css";
 import TournamentResult from "./TournamentResult";
 
-function TournamentHeader({ tournamentId, registrationClosed, winners }) {
+function TournamentHeader({ tournamentId, registrationClosed, rounds = [] }) {
   const [tournament, setTournament] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -23,7 +23,6 @@ function TournamentHeader({ tournamentId, registrationClosed, winners }) {
         const selectedTournament = tournaments.find(
           (tournament) => tournament.id === tournamentId,
         );
-
         setTournament(selectedTournament);
       } catch (error) {
         console.error(error);
@@ -44,6 +43,18 @@ function TournamentHeader({ tournamentId, registrationClosed, winners }) {
   }
 
   const status = getTournamentStatus(tournament);
+
+  const lastRound = [...rounds].sort(
+    (a, b) => b.roundNumber - a.roundNumber,
+  )[0];
+
+  const finalMatch = lastRound?.matches?.[0];
+
+  const isTournamentCompleted =
+    lastRound?.roundNumber === tournament.totalRounds &&
+    Boolean(finalMatch?.winnerPlayerId);
+
+  const winners = isTournamentCompleted ? getTournamentResult(rounds) : null;
 
   return (
     <header className="tournament-header">
@@ -86,7 +97,7 @@ function TournamentHeader({ tournamentId, registrationClosed, winners }) {
         </p>
       </div>
 
-      {winners && TournamentResult(winners)}
+      {winners && <TournamentResult winners={winners} />}
 
       <div className="tournament-header-stats">
         <PlayerCount

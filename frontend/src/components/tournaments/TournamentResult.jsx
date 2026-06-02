@@ -3,7 +3,7 @@ import { Crown } from "lucide-react";
 import "./TournamentCard.css";
 import "./TournamentResult.css";
 
-export default function TournamentResult(winners) {
+export default function TournamentResult({ winners }) {
   return (
     <>
       <div className="tournament-result">

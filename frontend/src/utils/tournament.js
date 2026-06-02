@@ -59,9 +59,19 @@ export function getTournamentResult(rounds) {
       ? finalMatch.player2
       : finalMatch.player1;
 
+  const player1Score = finalMatch.player1Score;
+  const player2Score = finalMatch.player2Score;
+
+  const highScore = Math.max(player1Score, player2Score);
+  const lowScore = Math.min(player1Score, player2Score);
+
+  function formatScore(score) {
+    return score === 0.5 ? "1/2" : score;
+  }
+
   return {
     winner,
     runnerUp,
-    finalScore: `${finalMatch.player1Score == 0.5 ? "1/2" : finalMatch.player1Score} - ${finalMatch.player2Score == 0.5 ? "1/2" : finalMatch.player2Score}`,
+    finalScore: `${formatScore(highScore)} - ${formatScore(lowScore)}`,
   };
 }

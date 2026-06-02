@@ -34,9 +34,6 @@ export default function RoundResults() {
 
       const results = await response.json();
 
-      console.log("data rounds: \n", results.data);
-      console.log("pagination: \n", results.pagination);
-
       setTournament(results.data[0].tournament);
       if (!activeTab) {
         setActiveTab(results.data[0].roundNumber);
@@ -90,8 +87,6 @@ export default function RoundResults() {
   const isTournamentCompleted =
     lastRound?.roundNumber === tournament?.totalRounds &&
     lastRound?.matches?.every((m) => m.winnerPlayerId !== null);
-
-  console.log("isTournamentCompleted in RoundResults:", isTournamentCompleted);
 
   // based on current an active tab
   const isActiveRoundCompleted = activeRound?.matches?.every(
