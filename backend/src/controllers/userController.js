@@ -155,7 +155,7 @@ const updateMe = async (req, res) => {
 
     const updatedUser = await prisma.user.update({
       where: { id: req.user.id },
-      data: { 
+      data: {
         firstName,
         lastName,
         phone,
@@ -182,4 +182,22 @@ const updateMe = async (req, res) => {
     });
   }
 };
-module.exports = { register, login, logout, getMe, updateMe };
+
+const deleteMe = async (req, res) => {
+  try {
+    await prisma.user.delete({
+      where: { id: req.user.id },
+    });
+
+    res.clearCookie("jwt");
+
+    res.status(StatusCodes.OK).json({
+      message: "Account deleted successfully",
+    });
+  } catch (err) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: "Server error",
+    });
+  }
+};
+module.exports = { register, login, logout, getMe, updateMe, deleteMe };

@@ -4,15 +4,17 @@ const {
   logout,
   getMe,
   updateMe,
+  deleteMe,
 } = require("../controllers/userController");
 const authMiddleware = require("../middleware/authMiddleware");
-const userMiddleware = require('../middleware/userMiddleware')
+const userMiddleware = require("../middleware/userMiddleware");
 const express = require("express");
 
 const userRoutes = express.Router();
 
 userRoutes.get("/auth/me", userMiddleware, getMe);
 userRoutes.patch("/auth/me", userMiddleware, updateMe);
+userRoutes.delete("/auth/me", userMiddleware, deleteMe);
 userRoutes.post("/auth/register", register);
 userRoutes.post("/auth/login", login);
 userRoutes.post("/auth/logout", logout);
