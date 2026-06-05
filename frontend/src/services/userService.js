@@ -50,3 +50,26 @@ export async function updateMyProfile(profileData) {
 
   return data.user;
 }
+
+export async function deleteMyAccount() {
+  const response = await fetch(`${API_URL}/api/auth/me`, {
+    method: "DELETE",
+    headers: {
+      ...authHeader(),
+    },
+  });
+
+  let data;
+
+  try {
+    data = await response.json();
+  } catch {
+    data = {};
+  }
+
+  if (!response.ok) {
+    throw new Error(data.message || "Could not delete account");
+  }
+
+  return data;
+}
