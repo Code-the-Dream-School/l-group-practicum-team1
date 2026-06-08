@@ -44,6 +44,7 @@ function TournamentDetails() {
               tournamentId={tournamentId}
               registrationClosed={hasRounds}
               rounds={rounds}
+              user={user}
             />
 
             {isAdmin && (

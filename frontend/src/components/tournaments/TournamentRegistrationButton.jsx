@@ -19,13 +19,15 @@ function TournamentRegistrationButton({ tournamentId, registrationClosed }) {
   const [error, setError] = useState("");
 
   const user = getCurrentUser();
+  const userId = user?.id;
 
   useEffect(() => {
     async function checkRegistrationStatus() {
       setMessage("");
       setError("");
+      setIsCheckingRegistration(true);
 
-      if (!user) {
+      if (!userId) {
         setIsRegistered(false);
         setIsCheckingRegistration(false);
         return;
@@ -35,19 +37,20 @@ function TournamentRegistrationButton({ tournamentId, registrationClosed }) {
         const players = await getTournamentPlayers(tournamentId);
 
         const userIsRegistered = players.some(
-          (player) => player.user?.id === user.id
+          (player) => player.user?.id === userId
         );
 
         setIsRegistered(userIsRegistered);
       } catch (err) {
-        setError(err.message || "Could not check registration status");
+        console.error(err);
+        setError("Could not check registration status");
       } finally {
         setIsCheckingRegistration(false);
       }
     }
 
     checkRegistrationStatus();
-  }, [tournamentId, user]);
+  }, [tournamentId, userId]);
 
   async function handleRegistrationToggle() {
     setMessage("");
@@ -58,7 +61,7 @@ function TournamentRegistrationButton({ tournamentId, registrationClosed }) {
       return;
     }
 
-    if (!user) {
+    if (!userId) {
       setError("Please log in before registering for this tournament.");
       return;
     }
@@ -67,17 +70,18 @@ function TournamentRegistrationButton({ tournamentId, registrationClosed }) {
       setIsSubmitting(true);
 
       if (isRegistered) {
-        const data = await withdrawFromTournament(tournamentId, user.id);
+        const data = await withdrawFromTournament(tournamentId, userId);
 
         setIsRegistered(false);
         setMessage(data.message || "You withdrew from the tournament.");
       } else {
-        const data = await signUpForTournament(tournamentId, user.id);
+        const data = await signUpForTournament(tournamentId, userId);
 
         setIsRegistered(true);
         setMessage(data.message || "Successfully registered for tournament!");
       }
     } catch (err) {
+      console.error(err);
       setError(err.message || "Something went wrong");
     } finally {
       setIsSubmitting(false);

@@ -1,8 +1,15 @@
 const API_URL = import.meta.env.VITE_API_URL;
 
+import { authHeader } from "../utils/auth";
+
 export async function getTournamentPlayers(tournamentId) {
   const response = await fetch(
-    `${API_URL}/api/tournaments/${tournamentId}/players`
+    `${API_URL}/api/tournaments/${tournamentId}/players`,
+    {
+      headers: {
+        ...authHeader(),
+      },
+    }
   );
 
   let result;
@@ -27,6 +34,7 @@ export async function signUpForTournament(tournamentId, userId) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        ...authHeader(),
       },
       body: JSON.stringify({
         userId,
@@ -55,6 +63,9 @@ export async function withdrawFromTournament(tournamentId, userId) {
     `${API_URL}/api/tournaments/${tournamentId}/players/${userId}`,
     {
       method: "DELETE",
+      headers: {
+        ...authHeader(),
+      },
     }
   );
 

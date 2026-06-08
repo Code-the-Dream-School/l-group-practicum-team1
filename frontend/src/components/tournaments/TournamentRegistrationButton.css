@@ -57,7 +57,12 @@
 
 @media (max-width: 768px) {
   .registration-action {
+    width: 100%;
     align-items: stretch;
+  }
+
+  .registration-button {
+    width: 100%;
   }
 
   .registration-message {
