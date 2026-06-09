@@ -1,19 +1,32 @@
 import { useEffect, useState } from "react";
+
 import TournamentRegistrationButton from "./TournamentRegistrationButton";
 import PlayerCount from "../players/PlayerCount";
+import TournamentResult from "./TournamentResult";
+
 import { getTournaments } from "../../services/tournamentService";
+
 import {
   getTournamentStatus,
   formatTournamentDateRange,
   getTournamentResult,
 } from "../../utils/tournament";
-import { CalendarDays, MapPin, Clock, Trophy, Layers } from "lucide-react";
-import "./TournamentHeader.css";
-import TournamentResult from "./TournamentResult";
 
-function TournamentHeader({ tournamentId, registrationClosed, rounds = [] }) {
+import { CalendarDays, MapPin, Clock, Trophy, Layers } from "lucide-react";
+
+import "./TournamentHeader.css";
+
+function TournamentHeader({
+  tournamentId,
+  registrationClosed,
+  rounds = [],
+  user,
+}) {
   const [tournament, setTournament] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const isAdmin = user?.role === "ADMIN";
+  const canShowRegistrationButton = user && !isAdmin;
 
   useEffect(() => {
     async function loadTournament() {
@@ -21,8 +34,9 @@ function TournamentHeader({ tournamentId, registrationClosed, rounds = [] }) {
         const tournaments = await getTournaments();
 
         const selectedTournament = tournaments.find(
-          (tournament) => tournament.id === tournamentId,
+          (tournament) => tournament.id === tournamentId
         );
+
         setTournament(selectedTournament);
       } catch (error) {
         console.error(error);
@@ -45,7 +59,7 @@ function TournamentHeader({ tournamentId, registrationClosed, rounds = [] }) {
   const status = getTournamentStatus(tournament);
 
   const lastRound = [...rounds].sort(
-    (a, b) => b.roundNumber - a.roundNumber,
+    (a, b) => b.roundNumber - a.roundNumber
   )[0];
 
   const finalMatch = lastRound?.matches?.[0];
@@ -58,14 +72,16 @@ function TournamentHeader({ tournamentId, registrationClosed, rounds = [] }) {
 
   return (
     <header className="tournament-header">
-      <h1>{tournament.name}</h1>
+      <div className="tournament-header-top">
+        <h1>{tournament.name}</h1>
 
-      {status === "upcoming" && !registrationClosed && (
-        <TournamentRegistrationButton
-          tournamentId={tournamentId}
-          registrationClosed={registrationClosed}
-        />
-      )}
+        {canShowRegistrationButton && (
+          <TournamentRegistrationButton
+            tournamentId={tournamentId}
+            registrationClosed={registrationClosed}
+          />
+        )}
+      </div>
 
       <div className="tournament-card-top">
         <span className="tournament-type-badge">
